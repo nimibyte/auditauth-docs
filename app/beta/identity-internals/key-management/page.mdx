@@ -1,12 +1,151 @@
 # Key Management
 
-This page defines key generation, storage, rotation, and verification practices for identity signing material.
+Key management defines how access tokens are signed and how services verify them.
+
+In the current Beta implementation, AuditAuth uses a simplified but deterministic signing model.
 
 ---
 
-## Topics
+## Signing Algorithm
 
-- Signing key lifecycle
-- Rotation strategy
-- Verification key distribution
-- Compromise response model
+Access tokens are:
+
+- JWT
+- Signed using RS256
+- Verified using a public key
+
+The JWT header includes:
+
+- `alg: RS256`
+- `kid: "main"`
+
+There is currently a single active signing key.
+
+---
+
+## Public Key Exposure
+
+AuditAuth exposes a public key endpoint for backend verification.
+
+Backends:
+
+- Retrieve the public key
+- Cache it locally
+- Use it to validate JWT signatures
+
+There is no JWKS (JSON Web Key Set) endpoint in Beta.
+
+The public key is exposed as a single-key response.
+
+---
+
+## No Multi-Key Rotation (Beta)
+
+In the current Beta phase:
+
+- Only one signing key is active
+- Multiple concurrent keys are not supported
+- There is no automated key rotation
+- There is no `kid`-based dynamic key selection
+
+The `kid` field is present for forward compatibility.
+
+Future versions will support:
+
+- Multiple active keys
+- JWKS endpoint
+- Graceful key rotation
+- Backward-compatible signature validation
+
+---
+
+## Verification Model
+
+Backend services validate tokens locally by:
+
+1. Verifying signature using public key
+2. Validating `iss`
+3. Validating `aud`
+4. Validating `exp`
+5. Validating `app_id` if required
+
+There is no dependency on:
+
+- Token introspection
+- Central verification service
+- Distributed validation state
+
+Signature validation is cryptographic and self-contained.
+
+---
+
+## Security Characteristics
+
+Current model provides:
+
+- Strong asymmetric signature validation
+- No shared secret across services
+- No runtime dependency on auth service
+- Deterministic verification performance
+
+It avoids:
+
+- Network latency during token validation
+- Per-request database lookup
+- Centralized validation bottleneck
+
+---
+
+## Operational Trade-Offs (Beta)
+
+Because there is no key rotation in Beta:
+
+- Key compromise would require manual replacement
+- No graceful multi-key rollover window exists
+- All tokens are signed by the same key
+
+This is acceptable for Beta environments but will evolve in stable releases.
+
+---
+
+## Future Evolution
+
+Future versions will include:
+
+- JWKS endpoint
+- Multi-key support
+- Graceful key rotation
+- Automated key lifecycle policies
+
+These enhancements will improve:
+
+- Enterprise compliance posture
+- Key rollover safety
+- Operational flexibility
+
+The verification model will remain local and cryptographic.
+
+---
+
+## Architectural Philosophy
+
+AuditAuth prioritizes:
+
+- Deterministic behavior
+- Minimal runtime dependencies
+- Stateless verification
+- Clear trust boundaries
+
+Key management follows this philosophy.
+
+The Beta implementation is intentionally minimal.
+
+It is designed to evolve without breaking verification guarantees.
+
+---
+
+## Next Step
+
+To understand the broader security implications and architectural trade-offs of the current design, continue with:
+
+- Security Trade-offs

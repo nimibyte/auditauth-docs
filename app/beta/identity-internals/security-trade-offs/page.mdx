@@ -1,12 +1,233 @@
 # Security Trade-offs
 
-This page captures explicit security and usability trade-offs in the identity runtime model.
+Every identity system makes trade-offs.
+
+AuditAuth prioritizes:
+
+- Deterministic behavior
+- Stateless cryptographic validation
+- Explicit session boundaries
+- Real-time identity enforcement
+
+This page documents the current Beta security model transparently.
 
 ---
 
-## Topics
+## Stateless Access Tokens
 
-- UX vs strict security controls
-- Session duration vs risk exposure
-- Stateless validation vs revocation latency
-- Operational complexity vs resilience
+Access tokens are:
+
+- JWT
+- Signed with RS256
+- 30-minute TTL
+- Self-contained
+
+They are not stored server-side.
+
+Signature validation is fully cryptographic.
+
+However, cryptographic validity alone does not guarantee operational eligibility.
+
+---
+
+## Real-Time Identity Enforcement
+
+AuditAuth supports real-time user blocking.
+
+When an identity is marked as `disabled`:
+
+- Login is immediately blocked.
+- Existing sessions are effectively invalidated.
+- Middleware enforcement rejects protected requests.
+- Access to the platform is denied in real time.
+
+Even if an access token is still within its 30-minute TTL:
+
+- Middleware verifies identity state.
+- If the identity is disabled, the request is rejected.
+
+This ensures real-time operational control.
+
+---
+
+## Revocation Model
+
+Revocation operates at two levels:
+
+### 1. Session-Level Revocation
+
+- Logout revokes the session.
+- Refresh tokens become invalid.
+- No new access tokens can be issued.
+
+Access tokens remain valid until expiration.
+
+---
+
+### 2. Identity-Level Enforcement
+
+If an identity is disabled:
+
+- Login is blocked immediately.
+- Middleware denies protected requests.
+- Session continuity is effectively terminated.
+- Access is blocked in real time.
+
+This overrides access token cryptographic validity.
+
+---
+
+## No Access Token Blacklist
+
+AuditAuth does not maintain a distributed blacklist of access tokens.
+
+Implication:
+
+- Access tokens are not centrally invalidated.
+- Validation remains cryptographic.
+
+However:
+
+- Middleware enforcement checks identity state.
+- Disabled users are rejected immediately.
+
+This combines stateless validation with real-time control.
+
+---
+
+## No Token Introspection Endpoint
+
+AuditAuth does not provide an introspection endpoint.
+
+Backends validate:
+
+- Signature
+- Claims
+- Identity active state (via middleware)
+
+This avoids:
+
+- Central runtime dependency
+- Network introspection latency
+
+Verification remains mostly local and deterministic.
+
+---
+
+## Identity State Check in Middleware
+
+Protected routes enforce:
+
+- Token validity
+- Identity active status
+
+If `identity.disabled = true`:
+
+- Request is rejected.
+- Platform access is denied.
+
+This provides real-time revocation capability without distributed token invalidation.
+
+---
+
+## Session & Refresh Interaction
+
+If a user is disabled:
+
+- Refresh attempts fail.
+- No new tokens are issued.
+- Existing access tokens are denied via middleware.
+- Login is blocked.
+
+Session continuity is fully terminated.
+
+---
+
+## No JWKS Endpoint (Beta)
+
+Current Beta implementation:
+
+- Single signing key
+- No multi-key rotation
+- No JWKS endpoint
+
+Future versions will introduce:
+
+- JWKS support
+- Multi-key rotation
+- Graceful rollover
+
+Key management evolution does not affect identity-level real-time enforcement.
+
+---
+
+## No Absolute Session Lifetime (Beta)
+
+Sessions use sliding expiration (~5 days).
+
+There is no absolute lifetime cap in Beta.
+
+Future versions may introduce configurable maximum lifetimes.
+
+---
+
+## Security Model Summary
+
+AuditAuth combines:
+
+- Short-lived access tokens (30 minutes)
+- Rotating refresh tokens
+- Session-based revocation
+- Real-time identity blocking via middleware
+- Plan and lifecycle enforcement
+
+This provides:
+
+- Bounded cryptographic exposure window
+- Immediate operational user blocking
+- Stateless request validation
+- Deterministic session control
+
+---
+
+## Risk Window
+
+If an access token is compromised:
+
+- Maximum exposure is 30 minutes
+- Middleware identity check can terminate access immediately if user is disabled
+- Refresh cannot continue once session is revoked or identity disabled
+
+Effective operational revocation is real time.
+
+---
+
+## Beta Limitations
+
+Current Beta does not include:
+
+- JWKS endpoint
+- Multi-key rotation
+- Token introspection endpoint
+- Absolute session lifetime
+- Advanced adaptive risk scoring
+
+These enhancements are planned for stable releases.
+
+---
+
+## Architectural Position
+
+AuditAuth provides:
+
+- Cryptographic stateless validation
+- Session-bound continuity
+- Real-time identity enforcement
+- Deterministic revocation boundaries
+- Explicit operational control
+
+Security posture is transparent.
+
+Trade-offs are deliberate.
+
+Enforcement is explicit.
