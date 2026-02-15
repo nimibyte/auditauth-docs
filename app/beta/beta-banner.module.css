@@ -1,6 +1,7 @@
 .bannerContent {
   display: inline-flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 8px;
   color: #3f3f46;
 }
@@ -22,6 +23,27 @@
 
 .text {
   color: #52525b;
+}
+
+@media (max-width: 768px) {
+  .bannerContent {
+    align-items: flex-start;
+    gap: 6px;
+    line-height: 1.35;
+  }
+
+  .label {
+    font-size: 10px;
+  }
+
+  .text {
+    flex-basis: 100%;
+    font-size: 12px;
+  }
+
+  .link {
+    font-size: 12px;
+  }
 }
 
 .link {

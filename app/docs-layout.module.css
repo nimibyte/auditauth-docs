@@ -1,0 +1,65 @@
+.navLogo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-width: 0;
+}
+
+.navLogoImage {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.navLogoText {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  min-width: 0;
+  color: #111827;
+  font-size: 0.95rem;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.navLogoProduct {
+  font-weight: 700;
+}
+
+.navLogoContext {
+  color: #4b5563;
+  font-weight: 500;
+}
+
+@media (max-width: 900px) {
+  .navLogoImage {
+    width: 32px;
+    height: 32px;
+  }
+
+  .navLogoText {
+    font-size: 0.875rem;
+    gap: 0.35rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .navLogoText {
+    font-size: 0.82rem;
+  }
+
+  .navLogoContext {
+    display: none;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .navLogoText {
+    color: #f3f4f6;
+  }
+
+  .navLogoContext {
+    color: #d1d5db;
+  }
+}

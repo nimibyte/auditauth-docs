@@ -5,6 +5,7 @@ import { Banner, Head } from 'nextra/components';
 import { ShieldAlert } from 'lucide-react';
 import { getPageMap } from 'nextra/page-map';
 import Link from 'next/link';
+import sharedLayoutStyles from '../docs-layout.module.css';
 import { SiteFooter } from '../site-footer';
 import styles from './v1-banner.module.css';
 import 'nextra-theme-docs/style.css';
@@ -76,12 +77,13 @@ const banner = (
 const navbar = (
   <Navbar
     logo={
-      <>
-        <img alt="auditauth" src="/logo.png" style={{ width: '40px' }} />
-        <span style={{ marginLeft: '15px' }}>
-          AuditAuth Official Documentation
+      <span className={sharedLayoutStyles.navLogo}>
+        <img alt="AuditAuth" src="/logo.png" className={sharedLayoutStyles.navLogoImage} />
+        <span className={sharedLayoutStyles.navLogoText}>
+          <span className={sharedLayoutStyles.navLogoProduct}>AuditAuth</span>
+          <span className={sharedLayoutStyles.navLogoContext}>Documentation</span>
         </span>
-      </>
+      </span>
     }
   />
 );
