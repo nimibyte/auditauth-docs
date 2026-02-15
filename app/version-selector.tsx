@@ -24,8 +24,6 @@ export const VersionSelector = () => {
     [pathname]
   );
 
-  const current = VERSIONS.find((v) => v.value === currentVersion)!;
-
   const handleChange = (next: string): void => {
     if (next === currentVersion) return;
     router.push(`/${next}`);

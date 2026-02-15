@@ -24,15 +24,14 @@ const meta: MetaRecord = {
       footer: false,
     }
   },
+  concepts: {
+    title: 'Concepts',
+    type: 'doc',
+  },
   howto: {
     title: 'how to',
     type: 'doc',
   },
-  concepts: {
-    title: 'Concepts',
-    type: 'doc',
-  }
-  // ...
 }
 
 export default meta
