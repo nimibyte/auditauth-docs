@@ -1,0 +1,32 @@
+# Trust Boundaries
+
+Purpose: define how AuditAuth layers trust decisions at runtime.
+
+## Layered Trust Model
+
+AuditAuth evaluates trust in layers:
+
+1. Token cryptographic validity
+2. Session state validity
+3. Identity state eligibility
+4. Application lifecycle eligibility
+5. Plan/feature enforcement eligibility
+
+All layers must pass.
+
+## State-Aware Enforcement
+
+Token validity is not sole authority.
+
+If identity or application state changes, runtime enforcement can block access immediately, independent of previously issued token lifetime.
+
+## Domain and Scope Boundaries
+
+- Authentication responsibilities remain centralized in AuditAuth.
+- Applications enforce identity state through SDK boundaries.
+- Identity and observability scopes are application-bound.
+
+## Beta Notes
+
+- Public key endpoint exists.
+- JWKS and multi-key rotation are not available in Beta.

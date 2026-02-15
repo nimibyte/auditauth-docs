@@ -5,20 +5,20 @@ const meta: MetaRecord = {
     title: 'Overview',
     type: 'doc'
   },
-  next: {
-    title: 'Next.js (Recommended)',
+  'audit-logs': {
+    title: 'Audit Logs',
     type: 'doc'
   },
-  react: {
-    title: 'React SDK',
+  'metrics': {
+    title: 'Metrics',
     type: 'doc'
   },
-  spa: {
-    title: 'SPA / Web SDK',
+  'sampling': {
+    title: 'Sampling',
     type: 'doc'
   },
-  backend: {
-    title: 'Backend Verification',
+  'retention': {
+    title: 'Retention',
     type: 'doc'
   }
 };

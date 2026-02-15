@@ -5,20 +5,20 @@ const meta: MetaRecord = {
     title: 'Overview',
     type: 'doc'
   },
-  next: {
-    title: 'Next.js (Recommended)',
+  overview: {
+    title: 'Plan Overview',
     type: 'doc'
   },
-  react: {
-    title: 'React SDK',
+  'feature-gating': {
+    title: 'Feature Gating',
     type: 'doc'
   },
-  spa: {
-    title: 'SPA / Web SDK',
+  'retention': {
+    title: 'Retention by Plan',
     type: 'doc'
   },
-  backend: {
-    title: 'Backend Verification',
+  'grace-period': {
+    title: 'Grace Period',
     type: 'doc'
   }
 };

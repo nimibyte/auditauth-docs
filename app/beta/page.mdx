@@ -1,125 +1,16 @@
-# AuditAuth
+# AuditAuth Beta Documentation
 
-AuditAuth is an identity control plane for modern applications.
+This documentation is organized into six blocks, each with a clear reader intent:
 
-It centralizes authentication, token issuance, session lifecycle, and identity telemetry, while applications enforce access at runtime.
+- `Introduction` for product context and positioning
+- `Architecture` for system model and component boundaries
+- `Integration` for SDK implementation paths
+- `Security & Trust Model` for formal contracts and protocol behavior
+- `Observability` for audit and metrics behavior
+- `Plans & Enforcement` for plan-gated capability behavior
 
----
+An additional `API Reference (Advanced)` block provides compact formal contracts.
 
-## What AuditAuth Is
+If you are integrating AuditAuth, start with `Integration`.
 
-AuditAuth is a centralized Identity Provider (IdP) that:
-
-- Authenticates users using managed identity flows.
-- Issues scoped access and refresh tokens.
-- Persists and rotates session state.
-- Records identity and security events.
-- Emits request and navigation telemetry tied to identity context.
-- Exposes portal and account-management flows through controlled redirects.
-
-AuditAuth is not an in-app login helper. It is an externalized identity layer with deterministic enforcement contracts.
-
----
-
-## What AuditAuth Is Not
-
-AuditAuth is not:
-
-- An embedded authentication implementation in your frontend.
-- A UI widget library for local credential handling.
-- A replacement for your authorization or business policy layer.
-- A generic analytics product.
-
-Applications MUST enforce identity state. They MUST NOT implement credential validation or token issuance.
-
----
-
-## System Overview
-
-AuditAuth is structured in four layers:
-
-### Identity Layer
-
-Handles:
-
-- Authentication challenges and credential validation.
-- Access and refresh token issuance.
-- Session creation, refresh, and revocation.
-- Provider orchestration (email, social, MFA).
-
-### Enforcement Layer
-
-SDKs enforce:
-
-- Session validity at runtime boundaries.
-- Token verification and refresh behavior.
-- Route/API protection for private resources.
-- Secure redirection into managed auth and portal routes.
-
-SDKs enforce identity state; they do not authenticate users.
-
-### Governance Layer
-
-Provides:
-
-- Immutable audit events for identity state transitions.
-- Session-linked activity traces.
-- Security-oriented event history.
-- Application-scoped governance data.
-
-### Observability Layer
-
-Provides:
-
-- Request and navigation metrics by session context.
-- Runtime visibility across browser and server flows.
-- Aggregate identity telemetry for operational monitoring.
-- Low-friction instrumentation through SDK defaults.
-
-Identity events become observable operational signals.
-
----
-
-## Core Principles
-
-### Centralized Authentication
-
-Authentication is owned by AuditAuth.
-
-Applications MUST redirect to AuditAuth instead of re-implementing login flows.
-
-### Identity-Driven Observability
-
-Authentication and session interactions are traceable through identity-aware telemetry.
-
-### Application Isolation
-
-Each application has an isolated identity scope and independent trust boundary.
-
-### SDK as Enforcement Layer
-
-SDKs do not authenticate users.
-
-They validate and enforce identity state.
-
----
-
-## Who AuditAuth Is For
-
-AuditAuth is designed for applications that require:
-
-- Centralized authentication with strict runtime enforcement.
-- Session governance and deterministic identity failure behavior.
-- Auditable identity event history.
-- Identity-aware metrics without custom telemetry plumbing.
-- Branded, externalized identity UX.
-
-This includes SaaS platforms, internal tools, and enterprise-grade applications.
-
----
-
-## Next Steps
-
-- Understand the Architecture and trust boundaries.
-- Select the Integration model that matches your runtime.
-- Review Identity, Governance, and Observability contracts.
+If you are reviewing guarantees and limits, start with `Security & Trust Model`.

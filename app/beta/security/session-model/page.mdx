@@ -1,0 +1,38 @@
+# Session Model
+
+Purpose: describe the stateful layer that governs identity continuity.
+
+## Model
+
+Session state is the authoritative control for long-lived access.
+
+It governs:
+
+- Refresh eligibility
+- Revocation
+- Sliding expiration behavior
+- Session continuity boundaries
+
+## Refresh Rotation
+
+Refresh tokens are rotated on refresh.
+
+Previous refresh material becomes invalid once rotation succeeds.
+
+This constrains replay and keeps continuity state explicit.
+
+## Real-Time State Enforcement
+
+Session state and identity state are checked during runtime enforcement.
+
+If identity is disabled, access is blocked in real time even when a previously issued access token still exists.
+
+## Plan and Lifecycle Interaction
+
+Session validity does not bypass application controls.
+
+Plan and lifecycle state can restrict behavior independently from token validity.
+
+## Formal Contract
+
+For refresh/logout/session endpoint contracts and cookie behavior, see `API Reference (Advanced) > Session Endpoints`.

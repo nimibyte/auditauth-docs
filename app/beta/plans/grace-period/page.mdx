@@ -1,0 +1,30 @@
+# Grace Period
+
+This page defines the `past_due` grace-period behavior and how it affects enforcement.
+
+## Purpose
+
+Grace period exists to avoid abrupt identity disruption while billing is unresolved.
+
+## `past_due` Behavior
+
+When an application enters `past_due`:
+
+- A one-month grace window starts.
+- Authentication remains available.
+- Existing sessions continue to operate.
+- Core enforcement behavior remains active.
+
+## Post-Grace Behavior
+
+If billing remains unresolved after grace period:
+
+- The application can transition to a restricted lifecycle state.
+- New authentication attempts can be limited.
+- Feature access can be reduced according to lifecycle policy.
+
+## Important Boundary
+
+Lifecycle state and plan permissions are separate controls.
+
+Plan defines capability scope, while lifecycle state determines operational eligibility.

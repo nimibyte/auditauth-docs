@@ -113,6 +113,18 @@ This reduces surface area and centralizes security.
 
 ---
 
+## State-Aware Enforcement
+
+AuditAuth enforcement is state-aware, not token-only.
+
+- Identity disabled state can trigger real-time access blocking.
+- Application lifecycle and plan state can override token-only assumptions.
+- JWT validity is required, but not sufficient, for runtime access.
+
+Trust evaluation is layered across token, session, identity, and application state.
+
+---
+
 ## Multi-Application Model
 
 AuditAuth operates at the application level.
@@ -151,7 +163,7 @@ They do not implement it.
 
 ## Next Step
 
-To understand how identity flows through the system, continue with:
+To continue by reader intent:
 
-- Identity Layer
-- Session lifecycle and token model
+- Use `Integration` for implementation paths.
+- Use `Security & Trust Model` for token/session contracts.

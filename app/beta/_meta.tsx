@@ -17,7 +17,7 @@ const meta: MetaRecord = {
       <VersionSelector />
     )
   },
-  index: {
+  introduction: {
     title: 'Introduction',
     type: 'doc',
   },
@@ -25,30 +25,26 @@ const meta: MetaRecord = {
     title: 'Architecture',
     type: 'doc',
   },
-  identity: {
-    title: 'Identity',
+  integration: {
+    title: 'Integration',
     type: 'doc',
   },
-  governance: {
-    title: 'Governance & Audit',
-    type: 'doc'
+  security: {
+    title: 'Security & Trust Model',
+    type: 'doc',
   },
   observability: {
     title: 'Observability',
-    type: 'doc'
+    type: 'doc',
   },
-  experience: {
-    title: 'User Experience Layer',
-    type: 'doc'
+  plans: {
+    title: 'Plans & Enforcement',
+    type: 'doc',
   },
-  integration: {
-    title: 'Integration',
-    type: 'doc'
-  },
-  billing: {
-    title: 'Billing & Application State',
-    type: 'doc'
-  },
+  'api-reference': {
+    title: 'API Reference (Advanced)',
+    type: 'doc',
+  }
 }
 
 export default meta

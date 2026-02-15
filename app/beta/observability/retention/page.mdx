@@ -1,0 +1,187 @@
+# Retention
+
+Audit and retention policies define the durability and lifecycle of governance data in AuditAuth.
+
+Retention is deterministic.
+
+Deletion is physical.
+
+Governance boundaries are explicit.
+
+---
+
+## Audit Log Guarantees
+
+Audit logs are:
+
+- Append-only
+- Immutable after creation
+- Identity-aware
+- Application-scoped
+- Retention-bound
+
+They record structured governance events such as:
+
+- Authentication actions
+- Portal access
+- MFA configuration changes
+
+Audit logs do not store full payloads.
+
+They store summarized, structured records.
+
+---
+
+## Physical Deletion Model
+
+Retention is enforced using:
+
+- `expires_at`
+- MongoDB TTL index
+
+When `expires_at` is reached:
+
+- Records are physically deleted.
+- They are no longer queryable.
+- There is no soft-delete layer.
+
+Deletion is handled by the database engine.
+
+No custom cleanup worker exists.
+
+---
+
+## Deterministic Retention Calculation
+
+Retention is calculated at ingestion time.
+
+When an audit log is created:
+
+1. Plan is resolved.
+2. `auditlog.retention_days` is evaluated.
+3. `expires_at` is computed.
+4. Record is persisted.
+
+Plan upgrades do not retroactively extend retention.
+
+Plan downgrades do not retroactively reduce existing expiration.
+
+Retention is forward-looking only.
+
+---
+
+## Metrics Retention Guarantees
+
+Metrics follow similar retention behavior:
+
+- `metrics.retention_days`
+- TTL-based deletion
+
+If retention is zero:
+
+- Metrics are not stored.
+
+Sampling does not affect audit logs.
+
+Sampling only affects metrics.
+
+---
+
+## Governance Boundaries
+
+Audit retention guarantees:
+
+- Predictable storage limits
+- Plan-bound retention windows
+- Deterministic expiration
+- No hidden archival layer
+
+The system does not:
+
+- Archive expired data externally
+- Offer cold storage tiers
+- Provide long-term immutable backups as part of core service
+
+Expired data is permanently removed.
+
+---
+
+## Compliance Position (Beta)
+
+Current Beta guarantees:
+
+- Logical isolation by application
+- Physical TTL-based deletion
+- Structured audit logging
+- Identity-aware event tracing
+
+Current Beta limitations:
+
+- No cryptographic immutability
+- No tamper-evident chaining
+- No WORM storage guarantees
+- No compliance certification claims
+- No formal audit export standard
+
+AuditAuth provides governance-grade logging.
+
+It does not claim regulatory compliance certification.
+
+---
+
+## Data Protection Considerations
+
+Audit logs may contain PII:
+
+- Email addresses
+
+Metrics do not include direct identity identifiers by default.
+
+Custom metadata may include arbitrary data.
+
+Applications are responsible for avoiding sensitive metadata submission.
+
+---
+
+## Operational Implications
+
+Retention impacts:
+
+- Historical audit review
+- Security investigations
+- Trend analysis
+- Governance traceability
+
+Short retention windows reduce storage footprint.
+
+Long retention windows increase storage and query complexity.
+
+Plan selection determines these trade-offs.
+
+---
+
+## Architectural Philosophy
+
+Retention in AuditAuth is:
+
+- Deterministic
+- Physical
+- Plan-aware
+- Forward-only
+- Database-native
+
+It avoids:
+
+- Hidden archival layers
+- Opaque storage tiers
+- Implicit retention extensions
+
+Governance boundaries are explicit.
+
+---
+
+## Next Step
+
+To understand runtime access evaluation and enforcement logic, continue with:
+
+- Access Control Model

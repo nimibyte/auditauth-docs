@@ -1,0 +1,16 @@
+# Rate Limiting
+
+Purpose: define request-throttling guarantees and response behavior.
+
+## Policy
+
+- Limit: `120` requests
+- Window: `60` seconds
+- Scope: global endpoint policy
+- Keying: per IP
+
+## Enforcement Behavior
+
+- Requests above threshold are rejected.
+- Rejected requests return `429 Too Many Requests`.
+- Clients should apply retry backoff and burst smoothing.

@@ -1,0 +1,32 @@
+# Plans & Enforcement
+
+This block defines how subscription plans and application lifecycle state affect runtime behavior.
+
+It focuses on deterministic capability gating, not billing UI flows.
+
+## Scope
+
+This block covers:
+
+- Plan capability overview
+- Feature gating behavior
+- Retention effects by plan
+- Grace-period behavior for `past_due`
+
+## Enforcement Principle
+
+Plan and lifecycle state are evaluated explicitly.
+
+AuditAuth does not apply implicit fallback behavior.
+
+## Change Timing
+
+- Immediate effects: feature-gating and access constraints by state/plan.
+- Deferred effects: retention changes apply to new ingestion windows, not retroactive rewrites.
+
+## Read Next
+
+- `Plan Overview`
+- `Feature Gating`
+- `Retention by Plan`
+- `Grace Period`

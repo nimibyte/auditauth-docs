@@ -1,0 +1,24 @@
+# Error Model
+
+Purpose: define HTTP error behavior for integration and enforcement handling.
+
+## Response Shape
+
+Typical error responses use a structured JSON payload with an error code/message contract.
+
+Applications should branch on HTTP status first, then error code where available.
+
+## Common Status Codes
+
+- `401 Unauthorized`: invalid or expired token/session, refresh failure, auth required
+- `403 Forbidden`: valid identity but blocked by policy, plan, or lifecycle restrictions
+- `404 Not Found`: unknown route/action or unavailable endpoint
+- `429 Too Many Requests`: request-rate threshold exceeded
+- `5xx`: upstream or internal processing failure
+
+## Client Handling Guidance
+
+- `401`: trigger re-authentication or refresh path
+- `403`: show explicit access-restricted state
+- `429`: retry with backoff
+- `5xx`: fail closed and surface transient error state

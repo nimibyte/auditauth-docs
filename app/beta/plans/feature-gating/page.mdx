@@ -1,0 +1,205 @@
+# Feature Gating
+
+Enforcement Behavior defines how plan permissions and lifecycle state translate into runtime restrictions.
+
+Enforcement is deterministic.
+
+There is no partial, hidden, or inconsistent behavior.
+
+Every restriction is explicit and reproducible.
+
+---
+
+## Enforcement Inputs
+
+At runtime, enforcement decisions consider:
+
+- Application plan
+- Permission surface
+- Lifecycle state
+- Current usage (e.g. user count)
+
+All four inputs are evaluated before allowing access or execution.
+
+---
+
+## Capacity Enforcement
+
+### User Limit Reached
+
+If `max_users_number` is reached:
+
+- New user registrations are rejected.
+- Existing users can continue to authenticate.
+- Session refresh remains functional.
+- No existing identity state is revoked.
+
+Capacity enforcement applies only to growth, not existing state.
+
+---
+
+## Provider Restrictions
+
+If an authentication provider is not enabled by plan:
+
+- The provider is not rendered in the UI.
+- Authentication attempts via that provider are rejected.
+- Direct API attempts are denied.
+
+Provider enforcement happens before session creation.
+
+---
+
+## Feature Enforcement
+
+If a feature flag is disabled:
+
+- Related UI elements are hidden.
+- API endpoints may respond with restricted access.
+- Dashboard sections are not accessible.
+
+Feature enforcement is consistent across:
+
+- UI
+- API
+- SDK behavior
+
+There is no bypass via direct API calls.
+
+---
+
+## Retention Enforcement
+
+Retention limits affect historical visibility.
+
+If data exceeds the retention window:
+
+- It is no longer queryable.
+- It does not appear in dashboards.
+- It cannot be exported.
+
+Retention enforcement is time-based and automatic.
+
+---
+
+## Sampling Enforcement
+
+Sampling affects event ingestion.
+
+If sampling is below `1`:
+
+- Not all events are recorded.
+- Dashboard metrics reflect sampled data.
+- API responses reflect sampled aggregation.
+
+Sampling does not affect authentication validity.
+
+It affects observability fidelity.
+
+---
+
+## Lifecycle State Enforcement
+
+Lifecycle state modifies enforcement behavior independently from plan.
+
+### Active
+
+- All plan permissions apply normally.
+
+### Past Due (Grace Period)
+
+- A one-month grace period begins.
+- Core authentication remains operational.
+- Existing sessions remain valid.
+- Feature access remains available.
+- Administrators are expected to resolve billing status.
+
+No immediate disruption occurs.
+
+---
+
+### Post-Grace Expiry
+
+If the grace period expires without resolution:
+
+- The application may transition to a restricted state.
+- Authentication may be limited.
+- Dashboard access may be restricted.
+- Feature-level capabilities may be disabled.
+
+Restrictions are explicit and visible to administrators.
+
+---
+
+### Suspended
+
+In a suspended state:
+
+- New authentication attempts may be blocked.
+- Token refresh may be denied.
+- Dashboard access may be disabled.
+- Enforcement prevents further system usage.
+
+Existing sessions may be invalidated depending on configuration.
+
+---
+
+### Cancelled
+
+In a cancelled state:
+
+- Authentication is disabled.
+- Token validation fails.
+- Dashboard access is restricted.
+- No new sessions are issued.
+
+Application state becomes inactive.
+
+---
+
+## No Retroactive Token Forgiveness
+
+Plan downgrades and lifecycle restrictions do not rewrite issued tokens.
+
+However:
+
+- Token refresh may be blocked.
+- Feature checks during request handling may fail.
+- Dashboard access may be denied.
+
+Identity validity and feature access are evaluated separately.
+
+---
+
+## Deterministic Failure
+
+When enforcement blocks an action:
+
+- The system returns explicit errors.
+- No silent degradation occurs.
+- No partial feature access is granted.
+
+All enforcement decisions are reproducible and auditable.
+
+---
+
+## Architectural Guarantee
+
+Enforcement is:
+
+- Application-scoped
+- Plan-driven
+- State-aware
+- Consistent across layers
+
+There is no scenario where billing state is ignored.
+
+Billing is infrastructure state.
+
+---
+
+## Next Step
+
+To understand how lifecycle states are defined and transitioned, continue with:
+
+- Lifecycle States

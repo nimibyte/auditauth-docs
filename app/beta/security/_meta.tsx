@@ -5,20 +5,16 @@ const meta: MetaRecord = {
     title: 'Overview',
     type: 'doc'
   },
-  next: {
-    title: 'Next.js (Recommended)',
+  'token-model': {
+    title: 'Token Model',
     type: 'doc'
   },
-  react: {
-    title: 'React SDK',
+  'session-model': {
+    title: 'Session Model',
     type: 'doc'
   },
-  spa: {
-    title: 'SPA / Web SDK',
-    type: 'doc'
-  },
-  backend: {
-    title: 'Backend Verification',
+  'trust-boundaries': {
+    title: 'Trust Boundaries',
     type: 'doc'
   }
 };
