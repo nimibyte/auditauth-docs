@@ -1,10 +1,10 @@
 # Integration Overview
 
-AuditAuth is designed to integrate into applications as an external identity control plane.
+AuditAuth integrates as an external identity control plane.
 
-Integration does not embed authentication logic inside your application.
+Authentication remains external to application code.
 
-It connects your application to a centralized identity infrastructure.
+Applications enforce identity state through SDK contracts.
 
 ---
 
@@ -16,7 +16,7 @@ AuditAuth supports multiple integration models depending on your application arc
 - Single Page Application (SPA) model
 - Backend token verification for services
 
-Each model enforces identity differently.
+Each model applies enforcement at a different runtime boundary.
 
 ---
 
@@ -28,7 +28,7 @@ In this model:
 
 - The SDK runs on the server.
 - Session validation happens server-side.
-- Tokens are never exposed to frontend code.
+- Sensitive token handling is kept out of client JavaScript.
 - Authentication redirects are controlled by middleware.
 
 This model minimizes security surface area and centralizes identity enforcement.
@@ -44,7 +44,7 @@ For applications without a server boundary, AuditAuth provides a Web SDK.
 In this model:
 
 - The client application manages redirects.
-- Tokens may be accessible in the browser.
+- Access token material exists in browser runtime storage.
 - Additional security considerations apply.
 
 The SPA model is supported but not the primary recommendation.
@@ -56,7 +56,7 @@ The SPA model is supported but not the primary recommendation.
 For distributed systems and APIs:
 
 - Services can validate access tokens.
-- Token signatures are verified.
+- Signature, issuer, and audience are verified.
 - Service-to-service identity validation is possible.
 
 This model is used in multi-service environments.
@@ -80,7 +80,7 @@ Your architecture determines the integration model.
 
 If your framework supports a server boundary, use the server-enforced model.
 
-If not, use the SPA integration carefully and understand its security implications.
+If not, use SPA integration with explicit browser hardening and strict token handling controls.
 
 ---
 

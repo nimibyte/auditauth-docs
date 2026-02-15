@@ -1,0 +1,146 @@
+# Web SDK (Framework Agnostic)
+
+The `@auditauth/web` package is the framework-agnostic AuditAuth SDK for browser-based applications.
+
+It is designed for applications that do not have a server enforcement boundary.
+
+This SDK handles:
+
+- Login redirects
+- Callback processing
+- Session state management
+- Token refresh
+- Authenticated requests
+- Navigation metrics
+
+Authentication remains centralized in AuditAuth.
+
+The SDK enforces identity state inside browser runtime constraints.
+
+---
+
+## Installation
+
+Install the package:
+
+```bash
+npm install @auditauth/web
+```
+
+---
+
+## Create an SDK Instance
+
+Create one `AuditAuthWeb` instance with your configuration and a storage adapter.
+
+```ts
+import { AuditAuthWeb } from '@auditauth/web'
+
+export const auditauth = new AuditAuthWeb(
+  {
+    apiKey: process.env.VITE_AUDITAUTH_API_KEY!,
+    appId: process.env.VITE_AUDITAUTH_APP_ID!,
+    baseUrl: 'http://localhost:5173',
+    redirectUrl: 'http://localhost:5173/private'
+  },
+  {
+    get: (name) => localStorage.getItem(name),
+    set: (name, value) => localStorage.setItem(name, value),
+    remove: (name) => localStorage.removeItem(name)
+  }
+)
+```
+
+The storage adapter defines how session data is persisted.
+
+Browser environments commonly use `localStorage`.
+
+---
+
+## Initialize on Application Startup
+
+Before rendering protected views, handle potential authentication callbacks and enable navigation tracking.
+
+```ts
+await auditauth.handleRedirect()
+auditauth.initNavigationTracking()
+```
+
+`handleRedirect()` processes login callbacks.
+
+`initNavigationTracking()` enables session-aware navigation metrics.
+
+---
+
+## Protect Private Views
+
+Before rendering protected content:
+
+```ts
+if (!auditauth.isAuthenticated()) {
+  await auditauth.login()
+}
+```
+
+Authentication is triggered via redirect.
+
+You can access the current user at any time:
+
+```ts
+const user = auditauth.getSessionUser()
+```
+
+---
+
+## Make Authenticated API Requests
+
+Use the SDK wrapper instead of `fetch()`:
+
+```ts
+const response = await auditauth.fetch(
+  'https://api.example.com/private'
+)
+```
+
+The SDK:
+
+- Attaches the access token
+- Handles token refresh automatically
+- Tracks request metrics
+
+---
+
+## Session Actions
+
+You can trigger session-related flows:
+
+- `auditauth.login()` — start login
+- `auditauth.logout()` — revoke session
+- `auditauth.goToPortal()` — open AuditAuth portal
+
+Authentication UI remains external.
+
+---
+
+## Security Considerations
+
+In browser-only environments:
+
+- Access tokens may be accessible to client code.
+- Storage strategy is a primary security decision.
+- HTTPS is mandatory.
+- Short-lived tokens are recommended.
+
+If a server boundary exists, prefer the Next.js integration model.
+
+---
+
+## When to Use the Web SDK
+
+Use `@auditauth/web` when:
+
+- Your application is purely client-rendered.
+- You do not control a backend enforcement layer.
+- You need framework-agnostic integration.
+
+For React-based applications, see the React SDK integration.

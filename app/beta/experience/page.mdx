@@ -1,10 +1,8 @@
 # User Experience Layer
 
-AuditAuth does not stop at authentication logic.
+AuditAuth externalizes identity UX as part of the authentication boundary.
 
-It provides a complete user-facing identity experience.
-
-This includes authentication interfaces, user profile management, and configurable branding.
+This includes managed auth screens, user portal flows, and branding controls.
 
 ---
 
@@ -21,7 +19,7 @@ Applications redirect users to AuditAuth for:
 
 Authentication interfaces are centralized.
 
-Applications do not implement custom login flows.
+Applications SHOULD NOT implement parallel credential interfaces.
 
 ---
 
@@ -31,11 +29,11 @@ Each application includes a user-facing portal.
 
 The portal allows users to:
 
-- Manage profile information
-- Update security settings
-- Review active sessions
-- Terminate sessions
-- Manage authentication methods
+- Manage profile information.
+- Update security settings.
+- Review active sessions.
+- Terminate active sessions.
+- Manage linked authentication methods.
 
 The portal is identity-scoped per application.
 
@@ -64,7 +62,7 @@ AuditAuth operates on dedicated domains for authentication and portal interactio
 
 Applications integrate through controlled redirects.
 
-Authentication never happens inside the client application domain.
+Authentication SHOULD happen in AuditAuth-managed domains, not in application-hosted credential forms.
 
 ---
 
@@ -91,7 +89,7 @@ They integrate and enforce identity state.
 AuditAuth defines a clear separation:
 
 - Authentication and identity UX live in AuditAuth.
-- Business logic and application UX live in the client application.
+- Business logic and product UX live in the application.
 
 This reduces complexity and improves security posture.
 

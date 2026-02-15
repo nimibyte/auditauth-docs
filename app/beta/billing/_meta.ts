@@ -5,24 +5,24 @@ const meta: MetaRecord = {
     title: 'Overview',
     type: 'doc'
   },
-  nextjs: {
-    title: 'Next.js (Recommended)',
+  application: {
+    title: 'Application Model',
     type: 'doc'
   },
-  web: {
-    title: 'Web SDK (Framework Agnostic)',
+  plans: {
+    title: 'Plan Model',
     type: 'doc'
   },
-  react: {
-    title: 'React SDK',
+  permissions: {
+    title: 'Permission Surface',
     type: 'doc'
   },
-  backend: {
-    title: 'Backend Verification',
+  enforcement: {
+    title: 'Enforcement Behavior',
     type: 'doc'
   },
-  principles: {
-    title: 'Integration Principles',
+  lifecycle: {
+    title: 'Lifecycle States',
     type: 'doc'
   }
 };

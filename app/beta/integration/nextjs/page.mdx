@@ -1,0 +1,172 @@
+# Next.js (Recommended)
+
+The recommended AuditAuth integration uses a server-enforced model with Next.js App Router.
+
+In this architecture:
+
+- Authentication happens in AuditAuth.
+- Session validation happens on the server.
+- Token operations are executed in server runtime.
+- Middleware enforces access boundaries.
+
+This model minimizes security exposure and centralizes identity enforcement.
+
+---
+
+## Installation
+
+Install the SDK:
+
+```bash
+npm install @auditauth/next
+```
+
+---
+
+## Create the AuditAuth Instance
+
+Create a shared provider instance:
+
+```ts
+// src/providers/auth.ts
+import { createAuditAuthNext } from '@auditauth/next'
+
+export const auditauth = createAuditAuthNext({
+  apiKey: process.env.AUDITAUTH_API_KEY!,
+  appId: process.env.AUDITAUTH_APP_ID!,
+  baseUrl: 'http://localhost:3000',
+  redirectUrl: 'http://localhost:3000/private'
+})
+```
+
+This instance provides:
+
+- Route handlers
+- Middleware enforcement
+- Session helpers
+- Authenticated fetch wrappers
+- Protected route wrappers (`withAuthRequest`)
+
+---
+
+## Register SDK Route Handlers
+
+Expose the SDK endpoints:
+
+```ts
+// src/app/api/auditauth/[...auditauth]/route.ts
+import { auditauth } from '@/providers/auth'
+
+export const { GET, POST } = auditauth.handlers
+```
+
+The SDK handles:
+
+- `/api/auditauth/login`
+- `/api/auditauth/callback`
+- `/api/auditauth/logout`
+- `/api/auditauth/portal`
+- `/api/auditauth/session`
+- `/api/auditauth/refresh`
+- `/api/auditauth/metrics`
+
+These endpoints are part of the SDK runtime contract and should not be reimplemented with custom logic.
+
+---
+
+## Protect Private Routes
+
+Enforce authentication at the routing boundary:
+
+```ts
+// src/proxy.ts
+import { NextResponse, type NextRequest } from 'next/server'
+import { auditauth } from '@/providers/auth'
+
+export async function proxy(request: NextRequest) {
+  if (request.nextUrl.pathname.startsWith('/private')) {
+    return auditauth.middleware(request)
+  }
+
+  return NextResponse.next()
+}
+```
+
+The middleware:
+
+- Validates session state
+- Performs automatic refresh
+- Redirects unauthenticated users
+- Returns `401` for unauthorized non-GET flows
+
+---
+
+## Access Session Data
+
+Use server-side helpers:
+
+```ts
+const session = await auditauth.getSession()
+
+if (!session) return null
+```
+
+Session access is supported in:
+
+- Server Components
+- Route Handlers
+- Server Actions
+
+---
+
+## Protect Custom APIs
+
+Wrap handlers with:
+
+```ts
+import { auditauth } from '@/providers/auth'
+import { NextResponse } from 'next/server'
+
+export const GET = auditauth.withAuthRequest(
+  async (_req, _ctx, session) => {
+    return NextResponse.json({ email: session.email })
+  }
+)
+```
+
+This guarantees:
+
+- Token validation
+- Session enforcement
+- Server-side trust boundary
+
+---
+
+## Server-to-Server Requests
+
+Use the authenticated fetch wrapper:
+
+```ts
+const response = await auditauth.fetch(
+  'https://api.example.com/private'
+)
+```
+
+This provides:
+
+- Automatic token refresh
+- Authenticated headers
+- Request metrics tracking
+
+---
+
+## Security Summary
+
+In this integration model:
+
+- Authentication is externalized.
+- Identity enforcement is server-side.
+- Sensitive token flow stays within server execution.
+- Session logic is centralized.
+
+This is the recommended integration strategy.

@@ -1,0 +1,197 @@
+# Permission Surface
+
+The Permission Surface defines how a plan translates into enforceable constraints.
+
+A plan is not a label.
+
+It is a structured set of runtime boundaries.
+
+These boundaries are evaluated deterministically across the system.
+
+---
+
+## Permission Categories
+
+Plan permissions fall into three primary categories:
+
+1. Capacity Limits
+2. Retention Policies
+3. Feature Flags
+
+Each category affects system behavior differently.
+
+---
+
+## Capacity Limits
+
+Capacity limits restrict quantitative usage.
+
+Examples include:
+
+- Maximum number of users
+- Authentication provider availability
+
+### Maximum Users
+
+If `max_users_number` is reached:
+
+- New user registrations are rejected.
+- Existing users remain unaffected.
+- Authentication continues for existing accounts.
+
+If the limit is `null`, capacity is unlimited.
+
+Capacity limits are enforced at user creation time.
+
+---
+
+## Authentication Providers
+
+Plans define available providers.
+
+If a provider is not enabled:
+
+- It is not visible in the authentication UI.
+- Login attempts using that provider are rejected.
+
+Provider access is evaluated before authentication is initiated.
+
+---
+
+## Retention Policies
+
+Retention policies control data availability over time.
+
+### Audit Log Retention
+
+Each plan defines:
+
+- `retention_days`
+
+Audit events older than the retention window are no longer accessible.
+
+Retention affects:
+
+- Dashboard queries
+- API exports
+- Historical inspection
+
+Retention enforcement is automatic and time-based.
+
+---
+
+### Metrics Retention
+
+Metrics retention defines:
+
+- How long metrics data remains accessible
+- Whether sampling applies
+
+Retention is enforced consistently across dashboards and API responses.
+
+---
+
+## Sampling Configuration
+
+Metrics may be sampled based on plan configuration.
+
+Sampling affects:
+
+- Session-level metrics
+- Request tracking
+- Navigation tracking
+
+If sampling is less than `1`, not all events are recorded.
+
+Sampling configuration is applied at event ingestion time.
+
+---
+
+## Feature Flags
+
+Feature flags enable or disable specific system capabilities.
+
+Examples:
+
+- `mfa`
+- `auditlog`
+- `metrics`
+- `whitelabel`
+- Dashboard-level features
+
+If a feature flag is disabled:
+
+- UI elements are hidden.
+- Related API endpoints may restrict responses.
+- Enforcement logic prevents access.
+
+Feature flags are evaluated before rendering dashboards or enabling flows.
+
+---
+
+## Whitelabel Permissions
+
+Plans define whitelabel behavior.
+
+For example:
+
+- `show_watermark: true` enforces watermark visibility.
+- Higher plans may disable watermark display.
+
+Whitelabel constraints are enforced at the identity UI layer.
+
+---
+
+## Runtime Evaluation
+
+Permission evaluation occurs:
+
+- During authentication flows
+- During dashboard rendering
+- During API requests
+- During feature access checks
+
+The system reads:
+
+- Application plan
+- Application lifecycle state
+- Permission surface configuration
+
+And applies constraints deterministically.
+
+---
+
+## No Soft Enforcement
+
+Permission boundaries are strict.
+
+If a capability is not allowed:
+
+- It is not partially available.
+- It is not hidden but accessible via API.
+- It is not bypassable.
+
+Enforcement is consistent across UI and API layers.
+
+---
+
+## Plan Upgrades and Downgrades
+
+When a plan changes:
+
+- Capacity limits update immediately.
+- Feature flags are recalculated.
+- Retention windows adjust.
+- Sampling configuration changes.
+
+Downgrades may restrict access to previously available capabilities.
+
+Permission recalculation is deterministic.
+
+---
+
+## Next Step
+
+To understand how lifecycle state interacts with permissions, continue with:
+
+- Enforcement Behavior

@@ -1,0 +1,142 @@
+# Application Model
+
+In AuditAuth, an Application is the primary operational boundary.
+
+It represents a single logical system integrating AuditAuth as its identity infrastructure.
+
+Applications are fully isolated from one another.
+
+---
+
+## Isolation Boundary
+
+Each application maintains:
+
+- Independent authentication configuration
+- Dedicated user scope
+- Separate audit logs
+- Independent observability metrics
+- Distinct subscription state
+
+There is no implicit identity sharing between applications.
+
+A user authenticated in one application does not gain access to another.
+
+---
+
+## Application Identifier
+
+Every application is identified by a unique `app_id`.
+
+This identifier is:
+
+- Embedded in issued access tokens
+- Used during backend verification
+- Required for SDK configuration
+- Enforced during token validation
+
+Tokens are application-scoped.
+
+Backends must validate that the `app_id` matches the expected service context.
+
+---
+
+## User Scope per Application
+
+Users are associated with applications.
+
+Although a single email may exist across multiple applications,
+identity state is scoped independently.
+
+This ensures:
+
+- Isolation of permissions
+- Independent audit trails
+- Application-level enforcement
+- No cross-application token reuse
+
+---
+
+## Subscription Scope
+
+Subscription and plan state are assigned per application.
+
+This means:
+
+- One application may be on a Starter plan.
+- Another application under the same organization may be on Enterprise.
+- Lifecycle state is independent per application.
+
+Billing does not operate globally.
+
+It operates per application boundary.
+
+---
+
+## Configuration Scope
+
+Authentication providers, MFA settings, and whitelabel configuration are defined per application.
+
+Examples:
+
+- One application may allow only Google login.
+- Another may allow Google, Apple, and password.
+- One may enforce MFA.
+- Another may not.
+
+Identity configuration is not shared implicitly.
+
+---
+
+## Observability Scope
+
+Metrics and audit logs are stored per application.
+
+Dashboards reflect:
+
+- Only that application's activity.
+- Only that application's sessions.
+- Only that application's events.
+
+There is no cross-application aggregation unless explicitly designed at a higher organizational level.
+
+---
+
+## State Coupling
+
+Application state affects:
+
+- Authentication availability
+- Feature access
+- Metrics retention
+- Audit log availability
+- Dashboard visibility
+
+User authentication state remains separate from application subscription state.
+
+An authenticated user does not override application-level restrictions.
+
+---
+
+## Architectural Implication
+
+Applications are the atomic unit of identity governance in AuditAuth.
+
+All enforcement decisions consider:
+
+- Application scope
+- Plan permissions
+- Lifecycle state
+- Token claims
+
+Identity is not global.
+
+It is explicitly application-bound.
+
+---
+
+## Next Step
+
+To understand how applications derive capabilities, continue with:
+
+- Plan Model

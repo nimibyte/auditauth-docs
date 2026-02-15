@@ -1,12 +1,12 @@
 # Identity
 
-The Identity layer is responsible for authenticating users and issuing secure sessions.
+The Identity layer authenticates users and issues application-scoped session credentials.
 
-It defines how users are verified, how tokens are generated, and how sessions are maintained across applications.
+It defines credential validation, token issuance, session lifecycle, and isolation boundaries.
 
 Identity is centralized in AuditAuth.
 
-Applications never implement authentication logic directly.
+Applications MUST NOT implement authentication logic directly.
 
 ---
 
@@ -14,13 +14,13 @@ Applications never implement authentication logic directly.
 
 AuditAuth supports multiple authentication mechanisms:
 
-- Email and password
+- Email/password
 - Social providers
 - Multi-factor authentication (MFA)
 
 Authentication is always performed within AuditAuth’s domain.
 
-Client applications redirect users to AuditAuth when authentication is required.
+When authentication is required, applications redirect to AuditAuth-managed endpoints.
 
 Credentials never pass through the client application.
 
@@ -30,13 +30,13 @@ Credentials never pass through the client application.
 
 The high-level authentication flow is:
 
-1. User attempts to access a protected resource.
-2. SDK detects missing or invalid session.
-3. User is redirected to AuditAuth.
-4. Authentication is completed.
-5. AuditAuth issues tokens.
-6. User is redirected back to the application.
-7. SDK validates and enforces session state.
+1. A request targets a protected page or API.
+2. The SDK checks session and token state.
+3. If invalid, runtime redirects to AuditAuth login.
+4. AuditAuth validates credentials and policy (including MFA if required).
+5. AuditAuth returns code/tokens through callback flow.
+6. SDK stores session material in runtime-appropriate storage.
+7. Application resumes with enforced identity state.
 
 Authentication and enforcement are separate responsibilities.
 
@@ -46,20 +46,20 @@ Authentication and enforcement are separate responsibilities.
 
 AuditAuth uses a dual-token model:
 
-- Access Token
-- Refresh Token
+- Access token
+- Refresh token
 
 ### Access Token
 
-- Short-lived
-- Used for authenticated API requests
-- Scoped to a specific application
+- Short-lived credential for protected requests.
+- Used in `Authorization: Bearer <token>` flows.
+- Validated against signature, issuer, and audience.
 
 ### Refresh Token
 
-- Long-lived
-- Used to issue new access tokens
-- Rotated securely
+- Longer-lived credential used to obtain new access tokens.
+- Rotation is managed by SDK refresh workflows.
+- Failure to refresh transitions session to unauthenticated state.
 
 Tokens are never generated inside the client application.
 
@@ -71,16 +71,16 @@ A session represents an authenticated identity within a specific application.
 
 A session includes:
 
-- Authenticated user identity
-- Application context
-- Token pair
-- Metadata (creation time, rotation state, etc.)
+- User identity profile.
+- Application scope (`app_id`).
+- Active token context.
+- Lifecycle metadata.
 
 Sessions are:
 
-- Created after successful authentication
-- Rotated automatically
-- Invalidated on logout or security events
+- Created after successful authentication.
+- Refreshed automatically when allowed.
+- Revoked on logout or invalidation events.
 
 ---
 
@@ -91,11 +91,11 @@ The lifecycle of a session includes:
 - Creation
 - Validation
 - Refresh
-- Invalidation
+- Revocation/expiry
 
 SDKs handle validation and refresh logic automatically.
 
-If refresh fails, the session is terminated and the user is redirected to authenticate again.
+If refresh fails, the session MUST be considered invalid and access MUST be rejected until re-authentication.
 
 ---
 
@@ -103,7 +103,7 @@ If refresh fails, the session is terminated and the user is redirected to authen
 
 Sessions are scoped per application.
 
-A user authenticated in one application does not implicitly gain access to another.
+A user authenticated for one application does not automatically gain access to another application.
 
 Each application maintains isolated identity boundaries.
 
@@ -111,10 +111,10 @@ Each application maintains isolated identity boundaries.
 
 ## Security Considerations
 
-- Authentication credentials are never exposed to client applications.
-- Token rotation reduces long-lived token risk.
-- Session invalidation propagates immediately.
-- Identity boundaries are enforced at the SDK layer.
+- Authentication credentials are not processed by application auth forms.
+- Access decisions depend on validated token claims.
+- Token rotation minimizes impact of leaked access tokens.
+- Invalid sessions MUST fail closed with explicit unauthorized handling.
 
 ---
 

@@ -1,8 +1,8 @@
 # AuditAuth
 
-AuditAuth is an identity infrastructure platform designed for modern applications.
+AuditAuth is an identity control plane for modern applications.
 
-It provides authentication, session control, governance, and observability as a unified layer — without pushing complexity into client applications.
+It centralizes authentication, token issuance, session lifecycle, and identity telemetry, while applications enforce access at runtime.
 
 ---
 
@@ -10,17 +10,14 @@ It provides authentication, session control, governance, and observability as a 
 
 AuditAuth is a centralized Identity Provider (IdP) that:
 
-- Authenticates users (email, social providers, MFA).
-- Manages sessions and token lifecycle.
-- Enforces access at the application boundary.
-- Tracks authentication and user activity events.
-- Provides audit logs and dashboards.
-- Exposes lightweight observability for sessions and navigation.
-- Offers a customizable user portal and authentication interface.
+- Authenticates users using managed identity flows.
+- Issues scoped access and refresh tokens.
+- Persists and rotates session state.
+- Records identity and security events.
+- Emits request and navigation telemetry tied to identity context.
+- Exposes portal and account-management flows through controlled redirects.
 
-AuditAuth is not just a login system.
-
-It is the identity control plane for your application.
+AuditAuth is not an in-app login helper. It is an externalized identity layer with deterministic enforcement contracts.
 
 ---
 
@@ -28,14 +25,12 @@ It is the identity control plane for your application.
 
 AuditAuth is not:
 
-- A frontend authentication helper.
-- A UI component library.
-- A database for users embedded in your app.
-- A wrapper around OAuth providers.
+- An embedded authentication implementation in your frontend.
+- A UI widget library for local credential handling.
+- A replacement for your authorization or business policy layer.
+- A generic analytics product.
 
-Client applications do not authenticate users.
-
-They enforce that authentication has already happened in AuditAuth.
+Applications MUST enforce identity state. They MUST NOT implement credential validation or token issuance.
 
 ---
 
@@ -47,41 +42,41 @@ AuditAuth is structured in four layers:
 
 Handles:
 
-- Authentication methods.
-- Token generation and rotation.
-- Session lifecycle.
-- Multi-factor authentication.
+- Authentication challenges and credential validation.
+- Access and refresh token issuance.
+- Session creation, refresh, and revocation.
+- Provider orchestration (email, social, MFA).
 
 ### Enforcement Layer
 
 SDKs enforce:
 
-- Session validity.
-- Access control.
-- Token refresh.
-- Secure communication with AuditAuth.
+- Session validity at runtime boundaries.
+- Token verification and refresh behavior.
+- Route/API protection for private resources.
+- Secure redirection into managed auth and portal routes.
 
-Applications never implement authentication logic directly.
+SDKs enforce identity state; they do not authenticate users.
 
 ### Governance Layer
 
 Provides:
 
-- Audit logs.
-- Authentication events.
-- User activity traceability.
-- Compliance-oriented event storage.
+- Immutable audit events for identity state transitions.
+- Session-linked activity traces.
+- Security-oriented event history.
+- Application-scoped governance data.
 
 ### Observability Layer
 
 Provides:
 
-- Session analytics.
-- Navigation metrics.
-- Lightweight activity dashboards.
-- Real-time interaction insights.
+- Request and navigation metrics by session context.
+- Runtime visibility across browser and server flows.
+- Aggregate identity telemetry for operational monitoring.
+- Low-friction instrumentation through SDK defaults.
 
-Identity becomes observable infrastructure.
+Identity events become observable operational signals.
 
 ---
 
@@ -91,15 +86,15 @@ Identity becomes observable infrastructure.
 
 Authentication is owned by AuditAuth.
 
-Applications do not replicate login logic.
+Applications MUST redirect to AuditAuth instead of re-implementing login flows.
 
 ### Identity-Driven Observability
 
-Every authentication and session event is traceable.
+Authentication and session interactions are traceable through identity-aware telemetry.
 
 ### Application Isolation
 
-Each application operates within its own isolated identity boundary.
+Each application has an isolated identity scope and independent trust boundary.
 
 ### SDK as Enforcement Layer
 
@@ -113,11 +108,11 @@ They validate and enforce identity state.
 
 AuditAuth is designed for applications that require:
 
-- Structured identity management.
-- Session governance.
-- User activity traceability.
-- Integrated authentication and observability.
-- Customizable authentication and user experience.
+- Centralized authentication with strict runtime enforcement.
+- Session governance and deterministic identity failure behavior.
+- Auditable identity event history.
+- Identity-aware metrics without custom telemetry plumbing.
+- Branded, externalized identity UX.
 
 This includes SaaS platforms, internal tools, and enterprise-grade applications.
 
@@ -125,8 +120,6 @@ This includes SaaS platforms, internal tools, and enterprise-grade applications.
 
 ## Next Steps
 
-- Understand the Architecture.
-- Integrate AuditAuth into your application.
-- Explore the Identity and Governance models.
-- Review the API reference for technical details.
-
+- Understand the Architecture and trust boundaries.
+- Select the Integration model that matches your runtime.
+- Review Identity, Governance, and Observability contracts.

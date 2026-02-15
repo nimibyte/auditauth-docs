@@ -1,0 +1,167 @@
+# Lifecycle States
+
+An Application in AuditAuth always operates under a defined lifecycle state.
+
+Lifecycle state determines operational eligibility independently from plan permissions.
+
+While plans define capability boundaries, lifecycle state defines whether the application is allowed to operate.
+
+---
+
+## State Model
+
+An application may exist in one of the following states:
+
+- `active`
+- `past_due`
+- `restricted` (post-grace)
+- `suspended`
+- `cancelled`
+
+State transitions are explicit.
+
+There is no implicit state change.
+
+---
+
+## Active
+
+The `active` state represents normal operation.
+
+In this state:
+
+- Plan permissions apply normally.
+- Authentication is fully functional.
+- Token issuance and refresh operate normally.
+- All enabled features are accessible.
+
+This is the default operational state.
+
+---
+
+## Past Due
+
+The `past_due` state indicates a billing issue.
+
+When entering `past_due`:
+
+- A one-month grace period begins.
+- Authentication remains operational.
+- Existing sessions remain valid.
+- Feature access remains enabled.
+- Administrators are expected to resolve billing status.
+
+No enforcement restrictions are applied during the grace period.
+
+Grace periods prevent sudden identity disruption.
+
+---
+
+## Restricted (Post-Grace)
+
+If the grace period expires without resolution, the application transitions to a restricted state.
+
+In this state:
+
+- New authentication attempts may be blocked.
+- Token refresh may be denied.
+- Dashboard access may be limited.
+- Feature access may be partially restricted.
+
+The system communicates restrictions explicitly.
+
+Enforcement becomes stricter while preserving deterministic behavior.
+
+---
+
+## Suspended
+
+The `suspended` state represents administrative or policy-based restriction.
+
+In this state:
+
+- Authentication may be disabled.
+- Token validation may fail.
+- New sessions are not issued.
+- Dashboard access may be blocked.
+
+Suspension overrides plan permissions.
+
+---
+
+## Cancelled
+
+The `cancelled` state represents permanent deactivation.
+
+In this state:
+
+- Authentication is disabled.
+- Token issuance is disabled.
+- Token refresh fails.
+- Dashboard access is revoked.
+- Feature access is disabled.
+
+The application is considered inactive.
+
+---
+
+## State Transitions
+
+Lifecycle transitions are controlled by:
+
+- Billing resolution
+- Administrative action
+- Subscription changes
+
+Common transitions:
+
+- `active → past_due`
+- `past_due → active`
+- `past_due → restricted`
+- `restricted → active`
+- `active → suspended`
+- `active → cancelled`
+
+Transitions are explicit and auditable.
+
+---
+
+## Enforcement Interaction
+
+Lifecycle state interacts with plan permissions.
+
+Example:
+
+An application may be on the `pro` plan,
+but if it is `suspended`, feature access is overridden.
+
+State always takes precedence over plan.
+
+---
+
+## Identity Continuity
+
+Lifecycle state does not retroactively invalidate issued tokens.
+
+However:
+
+- Token refresh may fail.
+- Authentication may be blocked.
+- Feature checks may deny access.
+
+Identity validity and operational eligibility are evaluated independently.
+
+---
+
+## Deterministic Governance
+
+Lifecycle states ensure:
+
+- Predictable enforcement behavior.
+- Explicit operational boundaries.
+- Clear administrative control.
+- No ambiguous subscription effects.
+
+Application state is infrastructure state.
+
+It governs system behavior directly.

@@ -1,10 +1,10 @@
 # Governance & Audit
 
-Authentication without governance is incomplete.
+AuditAuth couples identity enforcement with structured governance.
 
-AuditAuth integrates identity with structured auditability and traceability.
+Governance captures identity state transitions as inspectable records.
 
-Every relevant identity event is recorded, scoped, and inspectable.
+Every relevant identity event is application-scoped and queryable.
 
 ---
 
@@ -14,14 +14,10 @@ AuditAuth records identity-related events at the application level.
 
 These include:
 
-- Authentication attempts
-- Successful logins
-- Failed authentication
-- Session creation
-- Session invalidation
-- Token refresh events
-- Profile updates
-- Security-sensitive changes
+- Authentication attempts and outcomes.
+- Session creation and termination.
+- Token refresh outcomes.
+- User profile and security-sensitive updates.
 
 Audit events are immutable once recorded.
 
@@ -33,12 +29,12 @@ They are scoped per application.
 
 Each audit event contains:
 
-- Event type
-- User identifier
-- Application identifier
-- Timestamp
-- Metadata payload
-- Security context
+- Event type and category.
+- Subject identity reference.
+- Application scope identifier.
+- Event timestamp.
+- Context metadata.
+- Security attributes required for traceability.
 
 Events are designed for traceability, not for generic analytics.
 
@@ -64,10 +60,10 @@ AuditAuth links audit events to sessions.
 
 This enables:
 
-- Reconstruction of authentication timelines
-- Investigation of suspicious behavior
-- Session-level activity review
-- Security audits
+- Reconstruction of authentication timelines.
+- Session-centric incident review.
+- Correlation between auth, refresh, and revocation events.
+- Compliance-oriented evidentiary trails.
 
 Audit data is identity-aware by design.
 
@@ -79,7 +75,7 @@ Audit data is identity-aware by design.
 
 All identity events flow through AuditAuth.
 
-Applications do not implement their own logging for authentication state.
+Applications SHOULD NOT create parallel authentication truth sources.
 
 ### Deterministic State
 
@@ -99,10 +95,10 @@ Historical integrity is preserved.
 
 AuditAuth enables:
 
-- Structured event inspection
-- Historical traceability
-- Session reconstruction
-- Governance-ready reporting
+- Structured event inspection.
+- Historical traceability.
+- Session reconstruction.
+- Governance-ready reporting.
 
 Retention and export policies are configurable at the application level.
 
@@ -114,10 +110,10 @@ Governance is not analytics.
 
 Audit logs focus on:
 
-- Security
-- Identity transitions
-- Compliance
-- Traceability
+- Security control evidence.
+- Identity state transitions.
+- Compliance traceability.
+- Deterministic forensic reconstruction.
 
 For behavioral metrics and usage insights, continue to:
 

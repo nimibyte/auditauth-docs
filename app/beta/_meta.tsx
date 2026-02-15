@@ -41,6 +41,14 @@ const meta: MetaRecord = {
     title: 'User Experience Layer',
     type: 'doc'
   },
+  integration: {
+    title: 'Integration',
+    type: 'doc'
+  },
+  billing: {
+    title: 'Billing & Application State',
+    type: 'doc'
+  },
 }
 
 export default meta

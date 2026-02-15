@@ -1,12 +1,10 @@
 # Observability
 
-Identity is not only about authentication.
+Identity operations require runtime visibility, not only authentication success.
 
-It is about understanding how authenticated users interact with your application.
+AuditAuth exposes identity-aware observability signals tied to session context.
 
-AuditAuth provides identity-aware observability.
-
-Observability is scoped per application and tied directly to authenticated sessions.
+Observability is application-scoped and linked to authenticated flows.
 
 ---
 
@@ -16,10 +14,10 @@ Traditional analytics tools operate independently from authentication systems.
 
 AuditAuth connects:
 
-- Sessions
-- Authentication events
-- Navigation behavior
-- Interaction metrics
+- Session state.
+- Authentication outcomes.
+- Request behavior.
+- Navigation paths.
 
 Every metric is associated with an authenticated identity context.
 
@@ -29,16 +27,16 @@ Every metric is associated with an authenticated identity context.
 
 AuditAuth tracks:
 
-- Active sessions
-- Session duration
-- Session refresh cycles
-- Session termination reasons
+- Session activity windows.
+- Refresh frequency and outcomes.
+- Session continuity indicators.
+- Termination patterns.
 
 This enables:
 
-- Real-time session visibility
-- Detection of anomalous session behavior
-- Per-application session analysis
+- Real-time session health checks.
+- Detection of unusual session behavior.
+- Per-application stability analysis.
 
 ---
 
@@ -46,10 +44,10 @@ This enables:
 
 AuditAuth exposes:
 
-- Login success rate
-- Failed authentication attempts
-- MFA usage rate
-- Provider distribution (email vs social)
+- Login success/failure ratios.
+- Authentication failure patterns.
+- MFA utilization.
+- Provider-level distribution.
 
 Authentication performance becomes measurable.
 
@@ -61,10 +59,10 @@ Navigation metrics are tied to authenticated sessions.
 
 They include:
 
-- Page transitions
-- Session navigation flow
-- Entry and exit points
-- Interaction-level events
+- Page transitions.
+- Session path sequences.
+- Entry and exit paths.
+- Runtime-scoped navigation events.
 
 These metrics are identity-scoped, not anonymous.
 
@@ -76,11 +74,11 @@ AuditAuth is not a full analytics platform.
 
 It does not replace:
 
-- Business intelligence tools
-- Marketing analytics
-- Product analytics platforms
+- Business intelligence suites.
+- Marketing analytics stacks.
+- Product analytics instrumentation.
 
-It provides identity-layer observability.
+It provides identity-layer telemetry.
 
 The focus is on how authentication and session state interact with application behavior.
 
@@ -90,10 +88,10 @@ The focus is on how authentication and session state interact with application b
 
 Observability data is exposed through:
 
-- Application dashboards
-- Aggregated metrics
-- Session-level inspection
-- Time-based filtering
+- Application dashboards.
+- Aggregated identity metrics.
+- Session-level inspection.
+- Time-window filtering.
 
 Dashboards are scoped per application.
 
@@ -115,7 +113,7 @@ Each application has independent observability scope.
 
 The SDK emits identity-related metrics automatically.
 
-Applications do not implement custom tracking logic for identity behavior.
+Applications SHOULD avoid duplicating identity telemetry pipelines when SDK signals are sufficient.
 
 ---
 
@@ -126,7 +124,7 @@ Observability is useful for:
 - Monitoring authentication health.
 - Detecting abnormal login patterns.
 - Understanding session stability.
-- Reviewing navigation behavior tied to identity.
+- Reviewing identity-scoped navigation behavior.
 
 For security-focused review, see:
 
