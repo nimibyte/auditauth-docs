@@ -1,0 +1,159 @@
+# Architecture
+
+AuditAuth is structured as a layered identity infrastructure designed to separate authentication concerns from application logic.
+
+It operates as a centralized control plane for identity, session governance, and user observability.
+
+---
+
+## High-Level Architecture
+
+AuditAuth is composed of four primary layers:
+
+1. Identity Layer
+2. Enforcement Layer
+3. Governance Layer
+4. Observability Layer
+
+Each layer has a distinct responsibility and boundary.
+
+---
+
+## Identity Layer
+
+The Identity Layer is responsible for authentication and session issuance.
+
+It handles:
+
+- Email/password authentication.
+- Social providers.
+- Multi-factor authentication (MFA).
+- Access and refresh token generation.
+- Session creation and rotation.
+
+This layer owns the authentication lifecycle.
+
+Applications never authenticate users directly.
+
+---
+
+## Enforcement Layer
+
+The Enforcement Layer lives inside the client application through SDKs.
+
+Its responsibility is not to authenticate users.
+
+It enforces identity state.
+
+It validates:
+
+- Access tokens.
+- Session validity.
+- Token refresh logic.
+- Application access boundaries.
+
+If identity is invalid, the SDK redirects users to AuditAuth.
+
+Authentication always happens externally.
+
+---
+
+## Governance Layer
+
+The Governance Layer tracks identity-related activity.
+
+It records:
+
+- Authentication attempts.
+- Session creation and termination.
+- User profile modifications.
+- Security-related events.
+
+This layer enables:
+
+- Audit log inspection.
+- Historical traceability.
+- Compliance-oriented reporting.
+
+Governance is built into the identity lifecycle.
+
+---
+
+## Observability Layer
+
+The Observability Layer provides lightweight insight into how identity interacts with the application.
+
+It exposes:
+
+- Session metrics.
+- Authentication metrics.
+- Navigation metrics.
+- Interaction-level tracking.
+
+This is not a general-purpose analytics engine.
+
+It is identity-aware observability.
+
+Metrics are scoped per application and tied to authenticated sessions.
+
+---
+
+## Trust Boundaries
+
+AuditAuth enforces strict boundaries between:
+
+- The Identity Provider.
+- The Client Application.
+- The User.
+
+Authentication credentials never pass through the client application.
+
+Tokens are validated and rotated without exposing sensitive flows to frontend code.
+
+This reduces surface area and centralizes security.
+
+---
+
+## Multi-Application Model
+
+AuditAuth operates at the application level.
+
+Each application has:
+
+- Isolated identity configuration.
+- Independent subscription state.
+- Dedicated observability scope.
+- Separate audit trail.
+
+Identity is scoped, not global.
+
+---
+
+## Architectural Principles
+
+### Separation of Concerns
+
+Authentication is isolated from application business logic.
+
+### Centralized Control
+
+All identity events flow through AuditAuth.
+
+### Observable Identity
+
+Authentication and sessions are measurable, inspectable, and auditable.
+
+### Minimal Client Responsibility
+
+Client applications enforce identity.
+They do not implement it.
+
+---
+
+## Next Step
+
+To understand how identity flows through the system, continue with:
+
+- Identity Layer
+- Token Lifecycle
+- Session Model

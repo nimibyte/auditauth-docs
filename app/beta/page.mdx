@@ -1,63 +1,132 @@
 # AuditAuth
 
-AuditAuth is a full Identity Provider (IdP) designed for modern applications.
+AuditAuth is an identity infrastructure platform designed for modern applications.
 
-It owns the complete authentication lifecycle:
+It provides authentication, session control, governance, and observability as a unified layer — without pushing complexity into client applications.
 
-- Login UI
-- OAuth providers
-- Session management
-- Access + Refresh tokens
-- Audit logs
-- Metrics
-- Multi-tenant applications
+---
+
+## What AuditAuth Is
+
+AuditAuth is a centralized Identity Provider (IdP) that:
+
+- Authenticates users (email, social providers, MFA).
+- Manages sessions and token lifecycle.
+- Enforces access at the application boundary.
+- Tracks authentication and user activity events.
+- Provides audit logs and dashboards.
+- Exposes lightweight observability for sessions and navigation.
+- Offers a customizable user portal and authentication interface.
+
+AuditAuth is not just a login system.
+
+It is the identity control plane for your application.
 
 ---
 
 ## What AuditAuth Is Not
 
-AuditAuth is not a frontend authentication helper.
+AuditAuth is not:
 
-Client applications:
+- A frontend authentication helper.
+- A UI component library.
+- A database for users embedded in your app.
+- A wrapper around OAuth providers.
 
-- Do not implement OAuth.
-- Do not manage providers.
-- Do not handle MFA.
-- Do not store identity logic.
+Client applications do not authenticate users.
 
-Authentication happens in AuditAuth.
-
-The SDK enforces that authentication has already happened.
+They enforce that authentication has already happened in AuditAuth.
 
 ---
 
-## Quickstart
+## System Overview
 
-Install the Next.js SDK:
+AuditAuth is structured in four layers:
 
-```bash
-npm install @auditauth/next
-```
+### Identity Layer
 
-Create route handlers:
+Handles:
 
-```ts
-export const { GET, POST } = auditauth.getHandlers();
-```
+- Authentication methods.
+- Token generation and rotation.
+- Session lifecycle.
+- Multi-factor authentication.
 
-Add middleware:
+### Enforcement Layer
 
-```ts
-export default auditauth.middleware();
-```
+SDKs enforce:
 
-Protect a route.
+- Session validity.
+- Access control.
+- Token refresh.
+- Secure communication with AuditAuth.
 
-Done.
+Applications never implement authentication logic directly.
+
+### Governance Layer
+
+Provides:
+
+- Audit logs.
+- Authentication events.
+- User activity traceability.
+- Compliance-oriented event storage.
+
+### Observability Layer
+
+Provides:
+
+- Session analytics.
+- Navigation metrics.
+- Lightweight activity dashboards.
+- Real-time interaction insights.
+
+Identity becomes observable infrastructure.
 
 ---
 
-## Core Principle
+## Core Principles
 
-> AuditAuth SDKs do not authenticate users.  
-> They enforce that authentication has already happened in AuditAuth.
+### Centralized Authentication
+
+Authentication is owned by AuditAuth.
+
+Applications do not replicate login logic.
+
+### Identity-Driven Observability
+
+Every authentication and session event is traceable.
+
+### Application Isolation
+
+Each application operates within its own isolated identity boundary.
+
+### SDK as Enforcement Layer
+
+SDKs do not authenticate users.
+
+They validate and enforce identity state.
+
+---
+
+## Who AuditAuth Is For
+
+AuditAuth is designed for applications that require:
+
+- Structured identity management.
+- Session governance.
+- User activity traceability.
+- Integrated authentication and observability.
+- Customizable authentication and user experience.
+
+This includes SaaS platforms, internal tools, and enterprise-grade applications.
+
+---
+
+## Next Steps
+
+- Understand the Architecture.
+- Integrate AuditAuth into your application.
+- Explore the Identity and Governance models.
+- Review the API reference for technical details.
+

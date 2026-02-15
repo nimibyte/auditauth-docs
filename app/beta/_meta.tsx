@@ -18,18 +18,11 @@ const meta: MetaRecord = {
     )
   },
   index: {
-    title: 'Mierda de doc',
-    type: 'doc',
-    theme: {
-      footer: false,
-    }
-  },
-  concepts: {
-    title: 'Concepts',
+    title: 'Introduction',
     type: 'doc',
   },
-  howto: {
-    title: 'how to',
+  architecture: {
+    title: 'Architecture',
     type: 'doc',
   },
 }
