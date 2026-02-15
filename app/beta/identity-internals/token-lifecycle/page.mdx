@@ -1,0 +1,249 @@
+# Token Lifecycle
+
+The token lifecycle in AuditAuth defines how identity proof is created, used, refreshed, and eventually terminated.
+
+This lifecycle separates:
+
+- Stateless access validation
+- Stateful session continuity
+
+AuditAuth intentionally avoids global token storage or blacklist systems.
+
+---
+
+## High-Level Flow
+
+The lifecycle follows these stages:
+
+1. Authentication
+2. Token Issuance
+3. Access Token Usage
+4. Expiration
+5. Refresh
+6. Session Termination
+
+Each stage is deterministic.
+
+---
+
+## 1. Authentication
+
+Authentication occurs within the AuditAuth authentication boundary.
+
+This may include:
+
+- Email/password
+- Social login providers
+- TOTP-based MFA (if required)
+
+MFA validation is completed before token issuance.
+
+No access token is issued until identity verification is fully satisfied.
+
+---
+
+## 2. Token Issuance
+
+After successful authentication:
+
+### Access Token
+
+AuditAuth issues a JWT access token with:
+
+- Algorithm: RS256
+- TTL: 30 minutes
+- Claims:
+  - `sub`
+  - `email`
+  - `aud`
+  - `iss`
+  - `app_id`
+  - `account_id`
+  - `iat`
+  - `exp`
+
+Access tokens are:
+
+- Stateless
+- Self-contained
+- Verifiable via public key
+
+They are not stored in the database.
+
+---
+
+### Refresh Token
+
+AuditAuth also issues a refresh token:
+
+- Opaque random value
+- Stored hashed in the database
+- Bound to a session record
+- TTL: ~5 days (sliding)
+
+The refresh token is the stateful component of the session.
+
+---
+
+## 3. Access Token Usage
+
+Access tokens are used to:
+
+- Authenticate API requests
+- Authorize protected routes
+- Identify the application boundary
+
+Access tokens are transmitted:
+
+- Via `Authorization: Bearer <token>` header
+
+Backends validate:
+
+- Signature
+- Issuer
+- Audience
+- Expiration
+- Application scope
+
+No introspection endpoint is required.
+
+Validation is fully local.
+
+---
+
+## 4. Expiration
+
+Access tokens expire after 30 minutes.
+
+Expiration is enforced cryptographically via the `exp` claim.
+
+There is no server-side access token invalidation.
+
+Short-lived tokens reduce risk exposure.
+
+---
+
+## 5. Refresh Flow
+
+When an access token expires:
+
+- SDK detects `401`
+- Refresh request is initiated
+
+Refresh behavior:
+
+- The refresh token is validated against the session record.
+- If valid and not expired, a new access token is issued.
+- A new refresh token is generated.
+- The previous refresh token is invalidated.
+
+Refresh tokens are rotated on every refresh.
+
+This prevents reuse attacks.
+
+---
+
+## Sliding Expiration
+
+Each successful refresh:
+
+- Updates the session expiration (`expires_at`)
+- Extends the refresh window (~5 days)
+
+This creates sliding expiration behavior.
+
+Inactive sessions naturally expire.
+
+Active sessions remain valid.
+
+There is no absolute maximum lifetime in Beta.
+
+---
+
+## 6. Session Termination
+
+Session termination may occur via:
+
+- Logout
+- Manual revocation
+- Expiration
+- Lifecycle state enforcement
+
+When a session is revoked:
+
+- Refresh token becomes invalid
+- Future refresh attempts fail
+- Access tokens remain valid until expiration
+
+This design avoids immediate distributed invalidation complexity.
+
+---
+
+## Revocation Boundary
+
+Access tokens are not revoked immediately.
+
+They remain valid until `exp`.
+
+Refresh control governs long-term session continuity.
+
+This model:
+
+- Minimizes runtime state checks
+- Avoids global blacklists
+- Preserves horizontal scalability
+
+---
+
+## No Introspection Dependency
+
+AuditAuth does not implement:
+
+- Token introspection endpoint
+- Centralized access token store
+
+Access token validation is cryptographic.
+
+This avoids network dependency during request validation.
+
+---
+
+## Deterministic Lifecycle
+
+The lifecycle guarantees:
+
+- Short-lived stateless access
+- Stateful session continuity
+- Rotating refresh tokens
+- Sliding expiration
+- Predictable termination behavior
+
+There is no hidden state.
+
+All identity continuity flows through the session model.
+
+---
+
+## Security Implications
+
+Benefits:
+
+- Reduced attack window (30-minute access token)
+- Refresh rotation limits replay risk
+- No distributed blacklist overhead
+
+Trade-offs:
+
+- Access tokens remain valid until expiration
+- No immediate global invalidation
+- No key rotation in Beta
+
+These trade-offs are explicit and documented.
+
+---
+
+## Next Step
+
+To understand how sessions are persisted and governed, continue with:
+
+- Session Model
