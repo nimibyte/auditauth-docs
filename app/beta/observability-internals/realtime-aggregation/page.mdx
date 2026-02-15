@@ -1,0 +1,173 @@
+# Real-Time & Aggregation
+
+Observability dashboards in AuditAuth operate in near real-time.
+
+They are query-driven and aggregation-based.
+
+There is no streaming layer.
+
+There is no pre-computed metrics engine.
+
+---
+
+## Real-Time Characteristics
+
+Dashboards retrieve data via:
+
+- On-demand Mongo aggregation pipelines
+- Direct collection queries
+- Application-scoped filtering
+
+Each dashboard request:
+
+1. Resolves plan and feature access.
+2. Filters by application.
+3. Executes aggregation pipeline.
+4. Returns computed result.
+
+There is no background aggregation job.
+
+---
+
+## No Pre-Aggregation
+
+Current implementation does not include:
+
+- Materialized views
+- Scheduled rollups
+- Summary collections
+- Cached counters
+
+All metrics are computed dynamically.
+
+This favors flexibility and correctness.
+
+It does not favor extreme horizontal scalability.
+
+---
+
+## Aggregation Model
+
+Aggregations typically compute:
+
+- Request counts
+- Session counts
+- Error rates
+- Route distribution
+- Time-based trends
+
+These aggregations operate over:
+
+- Raw stored events
+- Retention-bound datasets
+- Sampled metric sets
+
+Accuracy depends on sampling configuration.
+
+---
+
+## Near Real-Time Behavior
+
+Observability is considered near real-time because:
+
+- Metrics are persisted synchronously on ingestion.
+- Dashboards query current collection state.
+- TTL deletions happen asynchronously in background.
+
+There may be slight delay between ingestion and visibility, depending on:
+
+- Write latency
+- Query timing
+- TTL monitor execution window
+
+There is no streaming push mechanism.
+
+---
+
+## Scaling Model
+
+Current aggregation behavior scales with:
+
+- Event volume
+- Retention window
+- Sampling rate
+- Query complexity
+
+There is no:
+
+- Horizontal aggregation cluster
+- Dedicated analytics database
+- Query caching layer
+
+Performance is directly tied to MongoDB performance.
+
+---
+
+## Dashboard Gating
+
+Dashboard visibility is controlled by:
+
+- `feature_access.dashboard_overview`
+- `feature_access.dashboard_navigation`
+- `feature_access.dashboard_requests`
+- `feature_access.dashboard_sessions`
+
+Stored data may exist but remain inaccessible through UI based on plan.
+
+Plan gating affects access, not storage.
+
+---
+
+## Enforcement Boundaries
+
+Real-time dashboards do not:
+
+- Emit enforcement audit events
+- Log plan-based access attempts
+- Log denied dashboard access
+
+Observability focuses on analytics and audit data.
+
+It does not fully audit its own enforcement decisions.
+
+---
+
+## Architectural Trade-Offs
+
+The current real-time model favors:
+
+- Simplicity
+- Deterministic ingestion rules
+- Low background complexity
+- Immediate query consistency
+
+It does not provide:
+
+- Sub-second streaming updates
+- High-frequency real-time alerting
+- Push-based analytics
+- Cross-region aggregation
+
+This is intentional in Beta.
+
+---
+
+## Beta Positioning
+
+In its current form, real-time aggregation is:
+
+- Sufficient for operational insight
+- Not designed for massive data warehousing
+- Not designed for SIEM-grade streaming analytics
+
+It complements identity infrastructure.
+
+It does not replace full analytics stacks.
+
+---
+
+## Next Step
+
+To understand the explicit system limits and architectural boundaries, continue with:
+
+- Observability Trade-offs

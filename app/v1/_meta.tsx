@@ -18,18 +18,17 @@ const meta: MetaRecord = {
     )
   },
   index: {
-    title: 'Mierda de doc',
+    title: 'Overview',
     type: 'doc',
-    theme: {
-      footer: false,
-    }
+  },
+  status: {
+    title: 'Release Status',
+    type: 'doc',
   },
   concepts: {
     title: 'Concepts',
     type: 'doc',
-  }
-  // ...
+  },
 }
 
 export default meta
-

@@ -1,14 +1,60 @@
 /* eslint-disable @next/next/no-img-element */
+import type { Metadata } from 'next';
 import { Footer, Layout, Navbar } from 'nextra-theme-docs';
 import { Banner, Head } from 'nextra/components';
+import { ShieldAlert } from 'lucide-react';
 import { getPageMap } from 'nextra/page-map';
+import Link from 'next/link';
+import { SiteFooter } from '../site-footer';
+import styles from './v1-banner.module.css';
 import 'nextra-theme-docs/style.css';
 
-export const metadata = {};
+export const metadata: Metadata = {
+  metadataBase: new URL('https://auditauth.com'),
+  title: {
+    default: 'AuditAuth Documentation',
+    template: '%s | AuditAuth Documentation',
+  },
+  description: 'Official AuditAuth documentation for architecture, integration, identity, and governance.',
+  applicationName: 'AuditAuth Documentation',
+  openGraph: {
+    title: 'AuditAuth Documentation',
+    description: 'Official AuditAuth documentation for architecture, integration, identity, and governance.',
+    url: 'https://auditauth.com',
+    siteName: 'AuditAuth Documentation',
+    type: 'website',
+    images: [
+      {
+        url: '/logo.png',
+        width: 512,
+        height: 512,
+        alt: 'AuditAuth Logo',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary',
+    title: 'AuditAuth Documentation',
+    description: 'Official AuditAuth documentation for architecture, integration, identity, and governance.',
+    images: ['/logo.png'],
+  },
+  icons: {
+    icon: '/logo.png',
+    shortcut: '/logo.png',
+    apple: '/logo.png',
+  },
+};
 
 const banner = (
-  <Banner storageKey="some-key">
-    AuditAuth Docs
+  <Banner storageKey="auditauth-v1-docs-banner">
+    <span className={styles.bannerContent}>
+      <ShieldAlert size={14} className={styles.icon} />
+      <span className={styles.label}>v1 Stabilizing</span>
+      <span className={styles.text}>Contracts are stable-oriented but still validated against beta maturity updates.</span>
+      <Link href="/beta" className={styles.link}>
+        Review beta changes
+      </Link>
+    </span>
   </Banner>
 );
 
@@ -25,11 +71,7 @@ const navbar = (
   />
 );
 
-const footer = (
-  <Footer>
-    MIT {new Date().getFullYear()} © AuditAuth
-  </Footer>
-);
+const footer = <Footer><SiteFooter /></Footer>;
 
 export default async function RootLayout({
   children

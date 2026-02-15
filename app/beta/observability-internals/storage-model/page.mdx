@@ -1,0 +1,200 @@
+# Storage & Query Model
+
+Observability storage in AuditAuth is intentionally simple and database-native.
+
+It relies on:
+
+- Dedicated collections
+- TTL-based retention
+- Logical application scoping
+- On-demand aggregation queries
+
+There is no external analytics engine.
+
+---
+
+## Collection Structure
+
+Observability data is stored in separate collections:
+
+- `auditlog`
+- `metric`
+
+These collections are distinct.
+
+Audit logs and metrics do not share storage.
+
+---
+
+## Application Scoping
+
+Both collections include:
+
+- `application`
+
+Data isolation is logical:
+
+- All queries filter by `application`
+- Collections are shared across applications
+- There is no physical partitioning per application
+
+This simplifies schema management.
+
+---
+
+## Retention Enforcement
+
+Both collections include:
+
+- `expires_at`
+
+A MongoDB TTL index is applied to:
+
+```
+expires_at
+```
+
+TTL behavior:
+
+- Physical deletion
+- Automatic background removal
+- No custom cleanup workers
+- No soft-delete pattern
+
+Retention enforcement is fully delegated to the database engine.
+
+---
+
+## Indexing Model
+
+Current Beta implementation:
+
+- TTL index on `expires_at`
+- No explicit index on `application`
+- No explicit index on `createdAt`
+- No compound analytics indexes
+
+Aggregation pipelines rely on:
+
+- Collection scans
+- In-memory processing
+- Mongo query planner behavior
+
+This favors simplicity over extreme scalability.
+
+---
+
+## Query Model
+
+Dashboards execute:
+
+- Mongo aggregation pipelines
+- On-demand queries
+- Real-time aggregations
+
+There are:
+
+- No materialized views
+- No pre-aggregation tables
+- No caching layer
+- No background aggregation jobs
+
+Each request triggers fresh aggregation computation.
+
+---
+
+## Real-Time Characteristics
+
+Observability is:
+
+- Near real-time
+- Query-driven
+- Event-based
+
+There is no streaming layer.
+
+There is no incremental aggregation engine.
+
+Performance scales primarily with:
+
+- Event volume
+- Retention window
+- Sampling configuration
+
+---
+
+## Data Isolation Guarantees
+
+Isolation is enforced by:
+
+- Application scoping in queries
+- API-level validation of `appId`
+- Plan-based feature gating
+
+There is no:
+
+- Per-application database
+- Per-account schema
+- Physical sharding by application
+
+Isolation is logical, not infrastructural.
+
+---
+
+## Scaling Considerations
+
+Current architecture is suitable for:
+
+- Moderate traffic
+- Controlled retention windows
+- Sampling-enabled environments
+
+High-scale scenarios may require:
+
+- Explicit indexing strategies
+- Sharding
+- Pre-aggregation
+- External analytics pipelines
+
+These are not part of the current Beta design.
+
+---
+
+## Operational Trade-Offs
+
+The storage model prioritizes:
+
+- Predictability
+- Minimal background processes
+- Deterministic retention
+- Low operational complexity
+
+It does not prioritize:
+
+- Massive horizontal scaling
+- Ultra-low-latency dashboards
+- Multi-region analytics replication
+
+This is intentional for the Beta stage.
+
+---
+
+## Architectural Position
+
+Observability storage is:
+
+- Database-native
+- TTL-driven
+- Logically isolated
+- Aggregation-based
+- Plan-aware
+
+It complements identity infrastructure without becoming a full analytics platform.
+
+---
+
+## Next Step
+
+To understand operational limits and enforcement boundaries, continue with:
+
+- Operational Boundaries

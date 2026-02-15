@@ -1,0 +1,212 @@
+# Event Model
+
+The Event Model defines how observability data is structured and categorized inside AuditAuth.
+
+All observability data belongs to one of two domains:
+
+- Audit Logs
+- Metrics
+
+Events are strongly typed in the backend and validated against defined models.
+
+---
+
+## Event Categories
+
+AuditAuth currently supports the following event categories:
+
+### Audit Log Events
+
+Authentication-related:
+
+- `auth:login`
+- `auth:logout`
+- `auth:refresh`
+- `auth:register`
+- `auth:forgot`
+- `auth:reset`
+- `auth:verify`
+
+Portal-related:
+
+- `portal:access`
+- `portal:update_profile`
+- `portal:enable_mfa`
+- `portal:disable_mfa`
+
+Failed login attempts are represented as:
+
+- `auth:login` with `success: false`
+
+There are no dedicated `mfa_success` or `mfa_failure` events for login.
+
+MFA success/failure is reflected within `auth:login`.
+
+There are no explicit `session_start` or `session_end` events.
+
+---
+
+### Metrics Events
+
+Metrics events include:
+
+- `request`
+- `navigation`
+- `custom`
+
+These are analytics-oriented events.
+
+They are not governance-grade logs.
+
+---
+
+## Strong Typing
+
+Both audit logs and metrics are strongly typed in backend models.
+
+- Audit logs use structured enums for actions.
+- Metrics use defined schemas for event type and metadata.
+
+This ensures predictable aggregation and filtering.
+
+---
+
+## Audit Log Event Structure
+
+Audit log entries contain summarized fields such as:
+
+- `action`
+- `email`
+- `success`
+- `reason`
+- `application`
+- `account`
+- `createdAt`
+- `expires_at`
+
+Audit logs are:
+
+- Append-only
+- Immutable after creation
+- PII-aware (email)
+
+They do not store full raw request payloads.
+
+They store structured summaries.
+
+---
+
+## Metrics Event Structure
+
+Metrics events are stored as raw events.
+
+Typical fields include:
+
+- `type` (request, navigation, custom)
+- `application`
+- `session_id`
+- `metadata`
+- `createdAt`
+- `expires_at`
+
+Metrics:
+
+- Do not directly store user identifiers
+- Are scoped by application
+- May include arbitrary metadata
+
+There is no explicit anonymization layer.
+
+Clients must avoid sending sensitive data in custom metadata.
+
+---
+
+## Session Context
+
+Metrics may include a `session_id`.
+
+Sessions are:
+
+- Client-generated
+- Persistent across navigation
+- Used for aggregation
+
+There is no explicit session start or end event.
+
+Session boundaries are inferred from activity.
+
+---
+
+## Event Persistence Model
+
+Audit logs:
+
+- Always stored (subject to retention)
+- Not sampled
+
+Metrics:
+
+- Stored only if `feature_access.metrics` is enabled
+- Subject to ingestion-time sampling
+- Subject to retention_days > 0
+
+If sampling is 0:
+
+- Metrics are not stored.
+
+If retention_days is 0:
+
+- Metrics are not stored.
+
+---
+
+## Identity vs Application Scope
+
+Audit logs are identity-aware.
+
+Metrics are application-scoped.
+
+Metrics ingestion requires:
+
+- Valid `apiKey`
+- Valid `appId`
+
+Metrics do not require user JWT.
+
+Observability operates at the application boundary.
+
+---
+
+## No Implicit System Events
+
+The system does not generate:
+
+- Explicit session start/end events
+- Automatic lifecycle transition logs
+- Dedicated enforcement failure events
+
+Observability captures defined domain events.
+
+It does not infer system-wide transitions beyond explicit actions.
+
+---
+
+## Architectural Implication
+
+The event model is:
+
+- Explicit
+- Strongly typed
+- Application-scoped
+- Plan-aware
+- TTL-bound
+
+It favors structured observability over verbose logging.
+
+---
+
+## Next Step
+
+To understand governance-grade logging behavior, continue with:
+
+- Audit Log Architecture

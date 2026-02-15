@@ -1,0 +1,217 @@
+# Observability Trade-offs
+
+Observability in AuditAuth is intentionally constrained.
+
+It is designed to complement identity infrastructure, not replace a full analytics platform.
+
+This section outlines explicit architectural trade-offs.
+
+---
+
+## Design Priorities
+
+The current architecture prioritizes:
+
+- Deterministic ingestion behavior
+- Plan-aware enforcement
+- Physical TTL-based retention
+- Minimal background processes
+- Low operational complexity
+- Clear identity boundary separation
+
+These priorities shape all implementation decisions.
+
+---
+
+## What Observability Is
+
+Observability in AuditAuth is:
+
+- Identity-aware (via audit logs)
+- Application-scoped (via metrics)
+- Retention-bound
+- Sampling-controlled
+- Query-driven
+- Near real-time
+- Beta-stage
+
+It provides operational insight for identity-integrated applications.
+
+---
+
+## What Observability Is Not
+
+It is not:
+
+- A full analytics data warehouse
+- A streaming event pipeline
+- A SIEM replacement
+- A log ingestion platform
+- A compliance-grade immutable ledger
+- A real-time alerting system
+- A distributed aggregation cluster
+
+Those capabilities require different architectural layers.
+
+---
+
+## Trade-Off: Simplicity vs Scale
+
+The system avoids:
+
+- Pre-aggregation layers
+- Materialized views
+- Streaming consumers
+- External analytics engines
+- Caching tiers
+
+This simplifies infrastructure and reduces operational overhead.
+
+However:
+
+- Large-scale deployments may require external analytics.
+- High event volumes may require custom indexing strategies.
+- Extreme real-time requirements are out of scope.
+
+---
+
+## Trade-Off: Logical Isolation vs Physical Isolation
+
+Data isolation is logical:
+
+- Application-scoped filtering
+- API-level validation
+
+There is no:
+
+- Per-application database
+- Physical data partitioning
+- Built-in sharding configuration
+
+This simplifies deployment.
+
+It does not provide infrastructure-level tenant isolation.
+
+---
+
+## Trade-Off: Audit Integrity vs Cryptographic Guarantees
+
+Audit logs are:
+
+- Append-only
+- TTL-enforced
+- Identity-aware
+
+They are not:
+
+- Cryptographically chained
+- Tamper-evident
+- WORM-compliant
+
+Future versions may introduce stronger immutability guarantees.
+
+---
+
+## Trade-Off: Identity Scope vs User Analytics
+
+Metrics are:
+
+- Application-scoped
+- Session-aware
+- Not directly tied to user identity
+
+This design:
+
+- Reduces PII exposure
+- Simplifies data protection boundaries
+
+It does not support deep per-user behavioral analytics.
+
+---
+
+## Trade-Off: Deterministic Sampling vs Analytical Fidelity
+
+Sampling is applied:
+
+- At ingestion
+- Per event
+- Probabilistically
+
+This ensures predictable storage usage.
+
+It may reduce analytical precision at lower tiers.
+
+Higher-tier plans mitigate this via increased sampling rate.
+
+---
+
+## Beta Characteristics
+
+Current Beta limitations include:
+
+- No materialized aggregation layer
+- No caching layer
+- No explicit compound indexing strategy
+- No systematic enforcement event logging
+- No raw metrics export endpoint
+- No per-user observability boundary
+
+These limitations are explicit and intentional.
+
+The architecture favors clarity over premature complexity.
+
+---
+
+## Strategic Position
+
+Observability in AuditAuth is:
+
+- Identity-aligned
+- Governance-compatible
+- Plan-aware
+- Deterministic
+- Infrastructure-focused
+
+It is designed to integrate seamlessly with authentication and lifecycle enforcement.
+
+It is not intended to replace dedicated analytics or compliance systems.
+
+---
+
+## Evolution Path
+
+Future evolution may include:
+
+- JWKS endpoint (Identity)
+- Stronger audit immutability guarantees
+- Enforcement event logging
+- Dedicated analytics export endpoints
+- Improved indexing strategies
+- Optional aggregation caching layer
+
+AuditAuth evolves in layers.
+
+Observability is one of those layers.
+
+---
+
+## Conclusion
+
+Observability Internals are intentionally:
+
+- Structured
+- Minimal
+- Deterministic
+- Explicit about boundaries
+
+The system is built for clarity and composability.
+
+Not maximal feature density.
+
+---
+
+You have now completed the Observability Internals section.
+
+Next recommended section:
+
+- Governance & Compliance

@@ -1,0 +1,187 @@
+# Compliance Boundaries
+
+AuditAuth provides governance-grade infrastructure.
+
+It does not claim regulatory certification.
+
+This section defines the explicit compliance boundaries of the system.
+
+---
+
+## What AuditAuth Provides
+
+AuditAuth provides:
+
+- Identity-aware audit logging
+- Plan-bound retention enforcement
+- Physical TTL-based deletion
+- Deterministic runtime access control
+- Application-scoped observability
+- Structured governance surfaces
+
+These capabilities support compliance efforts.
+
+They do not automatically confer compliance certification.
+
+---
+
+## What AuditAuth Does Not Claim
+
+AuditAuth does not currently provide:
+
+- SOC 2 certification
+- ISO 27001 certification
+- HIPAA compliance guarantees
+- GDPR certification claims
+- PCI-DSS compliance guarantees
+- WORM storage guarantees
+- Cryptographically chained audit logs
+- Tamper-evident log integrity proofs
+
+Organizations are responsible for their own regulatory posture.
+
+AuditAuth provides infrastructure components, not certification.
+
+---
+
+## Data Retention Guarantees
+
+Retention is:
+
+- Deterministic
+- TTL-enforced
+- Physical
+- Plan-bound
+- Forward-only
+
+There is no:
+
+- Hidden archival layer
+- Cold storage tier
+- Regulatory export pipeline
+- Immutable long-term storage guarantee
+
+Expired data is permanently removed.
+
+---
+
+## PII Handling
+
+Audit logs may contain:
+
+- Email addresses
+
+Metrics do not include identity PII by default.
+
+Custom metadata may include arbitrary data.
+
+Applications are responsible for:
+
+- Avoiding sensitive metadata
+- Managing regulatory data obligations
+- Handling user data deletion requests outside TTL window
+
+AuditAuth does not automatically anonymize custom metadata.
+
+---
+
+## Multi-Tenancy Model
+
+Data isolation is logical:
+
+- Scoped by application
+- Validated by apiKey and appId
+- Enforced via query filters
+
+There is no:
+
+- Physical tenant database separation
+- Dedicated per-tenant storage
+- Infrastructure-level isolation per application
+
+Isolation is enforced at application boundary.
+
+---
+
+## Runtime Enforcement Guarantees
+
+Access control is:
+
+- Runtime-evaluated
+- Identity-aware
+- Application-aware
+- Plan-aware
+
+Enforcement is deterministic but:
+
+- Not centrally journaled
+- Not cryptographically signed
+- Not compliance-certified
+
+Governance enforcement is operational, not regulatory.
+
+---
+
+## Beta Disclosure
+
+Current Beta characteristics:
+
+- No formal compliance certification
+- No audit immutability chaining
+- No centralized enforcement log
+- No regulatory export layer
+- No advanced encryption-at-rest customization per tenant
+
+The system is infrastructure-focused and evolving.
+
+---
+
+## Intended Position
+
+AuditAuth is:
+
+- Identity infrastructure
+- Governance-aligned
+- Plan-enforced
+- Deterministic
+- Transparent about boundaries
+
+It is not:
+
+- A compliance automation product
+- A regulatory certification platform
+- A dedicated GRC solution
+
+Organizations must layer additional controls if regulatory guarantees are required.
+
+---
+
+## Evolution Path
+
+Future enhancements may include:
+
+- Stronger audit immutability guarantees
+- Dedicated enforcement event logging
+- Exportable governance records
+- Cryptographic integrity verification
+- Improved tenant isolation options
+
+Compliance posture evolves alongside infrastructure maturity.
+
+---
+
+## Final Position
+
+AuditAuth provides structured governance capabilities.
+
+It does not substitute formal compliance programs.
+
+Transparency about boundaries is part of its design philosophy.
+
+---
+
+You have completed the Governance & Compliance section.
+
+Recommended next section:
+
+- API Reference

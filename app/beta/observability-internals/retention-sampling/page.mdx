@@ -1,0 +1,190 @@
+# Retention & Sampling Model
+
+Retention and sampling are core control mechanisms in AuditAuth observability.
+
+They determine:
+
+- Whether data is stored
+- How long data is retained
+- How much data is ingested
+
+Both mechanisms are plan-aware and applied at ingestion time.
+
+---
+
+## Ingestion-Time Enforcement
+
+Retention and sampling are evaluated before persistence.
+
+When a metric is received:
+
+1. Plan configuration is resolved.
+2. `feature_access.metrics` is checked.
+3. `metrics.retention_days` is evaluated.
+4. `metrics.sampling` is applied.
+5. `expires_at` is computed.
+6. Event is persisted or discarded.
+
+There is no post-processing enforcement layer.
+
+All decisions occur deterministically during ingestion.
+
+---
+
+## Retention Model
+
+Retention is defined by:
+
+```
+metrics.retention_days
+auditlog.retention_days
+```
+
+For each stored event:
+
+- `expires_at` is calculated at creation time.
+- A TTL index on `expires_at` enforces deletion.
+
+Deletion characteristics:
+
+- Physical deletion
+- Automatic via MongoDB TTL monitor
+- No custom cleanup worker
+- No logical-only filtering
+
+When `retention_days = 0`:
+
+- Events are not stored.
+
+Retention applies only to newly ingested events.
+
+Historical expiration timestamps are not recalculated on plan change.
+
+---
+
+## Sampling Model
+
+Sampling is defined by:
+
+```
+metrics.sampling
+```
+
+Sampling characteristics:
+
+- Applied at ingestion time
+- Probabilistic
+- Based on `Math.random()`
+- Evaluated per event
+
+If sampling = 0:
+
+- Metrics are not stored.
+
+If sampling < 1:
+
+- A subset of events is stored.
+
+Sampling:
+
+- Is not deterministic per session
+- Is not stored in event metadata
+- Does not affect historical events
+- Applies only to new events after plan change
+
+Sampling reduces storage and aggregation load.
+
+---
+
+## Plan Upgrade Behavior
+
+When plan is upgraded:
+
+- New retention_days apply to new events.
+- New sampling rate applies to new events.
+- Historical events keep their original `expires_at`.
+
+Retention extension is not retroactive.
+
+Sampling increase does not restore discarded events.
+
+---
+
+## Plan Downgrade Behavior
+
+When plan is downgraded:
+
+- New retention_days apply to new events.
+- New sampling rate applies to new events.
+- Historical events retain original expiration.
+
+Dashboard visibility may change based on:
+
+```
+feature_access.dashboard_*
+```
+
+Stored data may still exist but become inaccessible via UI.
+
+---
+
+## Audit Log Retention
+
+Audit logs follow similar retention logic:
+
+- `auditlog.retention_days`
+- TTL-based deletion
+
+Audit logs are never sampled.
+
+They are always stored (subject to retention > 0).
+
+Audit logs may contain PII.
+
+Retention enforcement ensures bounded governance storage.
+
+---
+
+## Enforcement Guarantees
+
+Retention & sampling provide:
+
+- Predictable storage limits
+- Plan-bound observability
+- Deterministic ingestion behavior
+- No background reconciliation
+
+They do not provide:
+
+- Retroactive retention extension
+- Historical sampling recalculation
+- Multi-tier storage migration
+
+The system favors simplicity and deterministic rules.
+
+---
+
+## Operational Implications
+
+Retention and sampling impact:
+
+- Storage footprint
+- Dashboard fidelity
+- Aggregation accuracy
+- Long-term trend analysis
+
+Applications requiring high-fidelity analytics should:
+
+- Use higher-tier plans
+- Avoid aggressive sampling
+- Export data externally if needed
+
+AuditAuth observability is designed to complement, not replace, full analytics platforms.
+
+---
+
+## Next Step
+
+To understand how sessions and requests are aggregated and interpreted, continue with:
+
+- Session & Request Analytics

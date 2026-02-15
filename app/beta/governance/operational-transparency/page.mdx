@@ -1,0 +1,168 @@
+# Operational Transparency
+
+Operational transparency defines what the system exposes, what it records, and what remains implicit.
+
+Transparency in AuditAuth is structured but bounded.
+
+The system favors explicit event logging over implicit system introspection.
+
+---
+
+## What Is Explicitly Logged
+
+Audit logs capture:
+
+- Authentication events
+- Logout and refresh events
+- Portal access
+- Profile updates
+- MFA enable/disable actions
+
+Metrics capture:
+
+- Request events
+- Navigation events
+- Custom events
+
+These are the primary observable surfaces.
+
+---
+
+## What Is Not Fully Logged
+
+Current Beta implementation does not systematically log:
+
+- All access denial decisions
+- All plan enforcement decisions
+- All lifecycle transitions
+- All administrative state changes
+- All middleware-level rejections
+
+Enforcement occurs at runtime, but not all enforcement decisions generate audit entries.
+
+---
+
+## Enforcement Visibility
+
+When governance blocks access:
+
+- The user is prevented from proceeding.
+- The action may fail visibly.
+- An explicit denial event is not always recorded.
+
+There is no centralized "policy decision log."
+
+Governance decisions are distributed across runtime layers.
+
+---
+
+## Observability of Governance
+
+Governance actions are partially visible via:
+
+- Audit logs (identity actions)
+- Metrics (activity patterns)
+- Dashboard feature availability
+
+There is no consolidated governance event timeline.
+
+Administrative changes may not always produce audit entries.
+
+---
+
+## Application Lifecycle Visibility
+
+Application state transitions (e.g., active → past_due → suspended):
+
+- Affect runtime behavior.
+- Affect dashboard visibility.
+- Affect login availability.
+
+These transitions are not guaranteed to produce structured audit records in all cases.
+
+Lifecycle transparency is operational, not fully historical.
+
+---
+
+## Plan Change Transparency
+
+Plan upgrades and downgrades:
+
+- Affect feature access immediately.
+- Affect retention and sampling for new events.
+- Affect dashboard access.
+
+Historical data retention is not retroactively altered.
+
+Plan enforcement actions are not exhaustively logged as separate governance events.
+
+---
+
+## Metrics Transparency Limits
+
+Metrics ingestion:
+
+- Requires apiKey and appId.
+- Does not require user authentication.
+
+If a user is disabled:
+
+- Metrics may still be recorded at application level.
+
+There is no per-user metrics blocking.
+
+Observability operates at application boundary.
+
+---
+
+## Transparency Philosophy
+
+AuditAuth prioritizes:
+
+- Explicit domain events
+- Deterministic enforcement
+- Structured logging of identity actions
+
+It does not attempt to:
+
+- Log every runtime decision
+- Act as a policy engine auditor
+- Provide compliance-grade governance journaling
+
+Operational transparency is structured but intentionally bounded.
+
+---
+
+## Beta Limitations
+
+Current Beta transparency gaps include:
+
+- No full enforcement decision log
+- No tamper-evident audit chaining
+- No dedicated lifecycle transition audit stream
+- No centralized governance event index
+
+These may evolve in future versions.
+
+---
+
+## Architectural Position
+
+Operational transparency in AuditAuth is:
+
+- Identity-focused
+- Governance-aware
+- Plan-bound
+- Explicit about limitations
+
+It provides structured traceability.
+
+It does not claim exhaustive policy introspection.
+
+---
+
+## Next Step
+
+To understand regulatory boundaries and compliance positioning, continue with:
+
+- Compliance Boundaries
