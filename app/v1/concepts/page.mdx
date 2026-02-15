@@ -1,0 +1,25 @@
+# Concepts
+
+Core concepts for the v1 documentation line.
+
+## Identity Control Plane
+
+AuditAuth externalizes authentication from application code into a centralized identity control plane.
+
+Applications consume identity state and enforce access boundaries; they do not issue credentials directly.
+
+## Runtime Enforcement
+
+SDKs enforce session and token behavior at runtime boundaries:
+
+- Protected routes
+- API request verification
+- Session refresh and revocation handling
+
+## Governance and Observability
+
+Identity events are captured as auditable records and can be correlated with runtime activity for operational visibility.
+
+## Version Context
+
+Although this is the v1 documentation line, AuditAuth remains in beta maturation. Treat this section as stable intent and validate fast-moving changes in `beta` when needed.

@@ -1,0 +1,30 @@
+# Token Model
+
+Purpose: describe how AuditAuth uses tokens in the enforcement model.
+
+## Model
+
+AuditAuth uses two token types:
+
+- Access token: signed JWT, short-lived, used for request authorization
+- Refresh token: opaque, state-bound, used to continue session lifecycle
+
+## Security Properties
+
+- JWT signature provides integrity and issuer authenticity.
+- Access tokens are intentionally short-lived.
+- Refresh tokens are rotated on refresh and validated against session state.
+
+## Enforcement Context
+
+A valid JWT is necessary but not sufficient for access.
+
+Runtime access decisions also depend on:
+
+- Session state
+- Identity state
+- Application lifecycle and plan constraints
+
+## Formal Contract
+
+For header/claims/TTL and verification details, see `API Reference (Advanced) > JWT Specification`.

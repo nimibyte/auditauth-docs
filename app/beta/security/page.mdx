@@ -1,0 +1,26 @@
+# Security & Trust Model
+
+Purpose: describe the conceptual security architecture used by AuditAuth.
+
+This block explains how token validation, session state, identity state, and plan/lifecycle enforcement work together.
+
+## Scope
+
+This section is conceptual and architecture-focused.
+
+Formal endpoint contracts, error schemas, and request limits are documented in `API Reference (Advanced)`.
+
+## Beta Characteristics
+
+Current Beta behavior includes:
+
+- Public key endpoint support (`GET /v1/public_key`)
+- No JWKS endpoint
+- Deterministic refresh/session enforcement
+- State-aware runtime enforcement
+
+## Read Next
+
+- `Token Model`
+- `Session Model`
+- `Trust Boundaries`

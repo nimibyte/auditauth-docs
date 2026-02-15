@@ -17,22 +17,34 @@ const meta: MetaRecord = {
       <VersionSelector />
     )
   },
-  index: {
-    title: 'Mierda de doc',
-    type: 'doc',
-    theme: {
-      footer: false,
-    }
-  },
-  howto: {
-    title: 'how to',
+  introduction: {
+    title: 'Introduction',
     type: 'doc',
   },
-  concepts: {
-    title: 'Concepts',
+  architecture: {
+    title: 'Architecture',
+    type: 'doc',
+  },
+  integration: {
+    title: 'Integration',
+    type: 'doc',
+  },
+  security: {
+    title: 'Security & Trust Model',
+    type: 'doc',
+  },
+  observability: {
+    title: 'Observability',
+    type: 'doc',
+  },
+  plans: {
+    title: 'Plans & Enforcement',
+    type: 'doc',
+  },
+  'api-reference': {
+    title: 'API Reference (Advanced)',
     type: 'doc',
   }
-  // ...
 }
 
 export default meta

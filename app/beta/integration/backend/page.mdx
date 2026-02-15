@@ -1,0 +1,161 @@
+# Backend Verification
+
+The `@auditauth/node` package provides server-side verification of AuditAuth access tokens.
+
+It is designed for:
+
+- API backends
+- Microservices
+- Express or Fastify servers
+- Native Fetch handlers
+- Edge-compatible Node runtimes
+
+Authentication is still performed by AuditAuth.
+
+Backends validate tokens before granting access to protected resources.
+
+---
+
+## Installation
+
+Install the package in your Node.js service:
+
+```bash
+npm install @auditauth/node
+```
+
+---
+
+## Verify a Bearer Token
+
+Use `verifyAccessToken()` when you already have a raw JWT string.
+
+```ts
+import { verifyAccessToken } from '@auditauth/node'
+
+const payload = await verifyAccessToken({
+  token: accessToken,
+  appId: process.env.AUDITAUTH_APP_ID!
+})
+
+console.log(payload.sub)
+console.log(payload.email)
+```
+
+The SDK validates:
+
+- JWT signature (`RS256`)
+- Issuer (`iss`) against AuditAuth configuration
+- Audience (`aud`) against the provided `appId`
+
+If validation fails, an error is thrown.
+
+---
+
+## Verify an Incoming HTTP Request
+
+Use `verifyRequest()` to extract and validate the `Authorization` header.
+
+```ts
+import { verifyRequest } from '@auditauth/node'
+
+export async function handler(request: Request) {
+  const session = await verifyRequest({
+    request,
+    appId: process.env.AUDITAUTH_APP_ID!
+  })
+
+  return Response.json({
+    userId: session.sub,
+    email: session.email
+  })
+}
+```
+
+`verifyRequest()` supports multiple request shapes:
+
+- `Request`
+- `{ headers: Headers }`
+- `{ headers: Record<string, string> }`
+
+This makes it compatible with native Fetch APIs and common Node server adapters.
+
+---
+
+## Express Middleware Example
+
+Use `verifyRequest()` inside route handlers or middleware.
+
+```ts
+import express from 'express'
+import { verifyRequest } from '@auditauth/node'
+
+const app = express()
+
+app.get('/private', async (req, res) => {
+  try {
+    const session = await verifyRequest({
+      request: { headers: req.headers as Record<string, string> },
+      appId: process.env.AUDITAUTH_APP_ID!
+    })
+
+    res.json({
+      accountId: session.account_id,
+      email: session.email
+    })
+  } catch {
+    res.status(401).json({ error: 'Unauthorized' })
+  }
+})
+```
+
+If verification fails, return `401 Unauthorized`.
+
+---
+
+## Token Payload
+
+The SDK returns `AuditAuthTokenPayload`, which extends `JWTPayload`.
+
+It includes:
+
+- `sub: string`
+- `email: string`
+- `aud: string`
+- `account_id: string`
+- `app_id: string`
+
+Backends must validate the token before trusting these claims.
+
+---
+
+## Error Handling
+
+Verification throws an error when:
+
+- The token is missing
+- The `Authorization` header is invalid
+- The JWT signature is invalid
+- `iss` or `aud` claims do not match expected values
+
+Handle verification failures deterministically and respond with `401 Unauthorized`.
+
+---
+
+## When to Use Backend Verification
+
+Use `@auditauth/node` when:
+
+- Protecting API routes
+- Building microservices
+- Validating tokens in distributed systems
+- Enforcing identity at the service boundary
+
+Backend verification complements:
+
+- Next.js server-enforced integration
+- Web and React SDK integrations
+
+It does not perform authentication.
+
+It validates identity state.

@@ -1,0 +1,35 @@
+# Session Endpoints
+
+Purpose: define refresh, logout, and session inspection behavior.
+
+## `GET|POST /api/auditauth/refresh`
+
+- Method: `GET` or `POST`
+- Path: `/api/auditauth/refresh`
+- Required cookie: `auditauth_refresh`
+- Optional query (GET): `redirectUrl`
+- Cookies updated: `auditauth_access`, `auditauth_refresh`
+- Behavior: rotates refresh token and issues new access token (sliding expiration)
+- Status codes: `302`, `401`, `5xx`
+
+## `GET /api/auditauth/logout`
+
+- Method: `GET`
+- Path: `/api/auditauth/logout`
+- Required headers: none
+- Cookies cleared: `auditauth_access`, `auditauth_refresh`, `auditauth_session`
+- Behavior: revokes session context and redirects
+- Status codes: `302`, `5xx`
+
+## `GET /api/auditauth/session`
+
+- Method: `GET`
+- Path: `/api/auditauth/session`
+- Required headers: none
+- Behavior: returns current session user if valid
+- Status codes: `200`, `401`
+
+## Cookie Model
+
+- Browser flows use HTTP cookies for session continuity.
+- Refresh token is opaque and rotated on refresh.

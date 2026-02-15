@@ -1,0 +1,94 @@
+# Integration Overview
+
+AuditAuth integrates as an external identity control plane.
+
+Authentication remains external to application code.
+
+Applications enforce identity state through SDK contracts.
+
+---
+
+## Supported Integration Models
+
+AuditAuth supports multiple integration models depending on your application architecture:
+
+- Server-enforced model (Next.js or similar frameworks)
+- Single Page Application (SPA) model
+- Backend token verification for services
+
+Each model applies enforcement at a different runtime boundary.
+
+---
+
+## Recommended Model: Server-Enforced Integration
+
+The recommended integration strategy is a server-enforced model.
+
+In this model:
+
+- The SDK runs on the server.
+- Session validation happens server-side.
+- Sensitive token handling is kept out of client JavaScript.
+- Authentication redirects are controlled by middleware.
+
+This model minimizes security surface area and centralizes identity enforcement.
+
+Frameworks like Next.js are ideal for this pattern.
+
+---
+
+## SPA Model
+
+For applications without a server boundary, AuditAuth provides a Web SDK.
+
+In this model:
+
+- The client application manages redirects.
+- Access token material exists in browser runtime storage.
+- Additional security considerations apply.
+
+The SPA model is supported but not the primary recommendation.
+
+---
+
+## Backend Verification
+
+For distributed systems and APIs:
+
+- Services can validate access tokens.
+- Signature, issuer, and audience are verified.
+- Service-to-service identity validation is possible.
+
+This model is used in multi-service environments.
+
+---
+
+## Integration Philosophy
+
+AuditAuth enforces a strict rule:
+
+Applications enforce identity.
+They do not implement authentication.
+
+Authentication logic remains centralized in AuditAuth.
+
+---
+
+## Choosing a Model
+
+Your architecture determines the integration model.
+
+If your framework supports a server boundary, use the server-enforced model.
+
+If not, use SPA integration with explicit browser hardening and strict token handling controls.
+
+---
+
+## Next Step
+
+To integrate AuditAuth into a production application, continue with:
+
+- Next.js (Recommended)
+- React SDK
+- SPA / Web SDK
+- Backend Verification

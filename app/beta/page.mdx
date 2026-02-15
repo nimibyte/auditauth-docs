@@ -1,63 +1,16 @@
-# AuditAuth
+# AuditAuth Beta Documentation
 
-AuditAuth is a full Identity Provider (IdP) designed for modern applications.
+This documentation is organized into six blocks, each with a clear reader intent:
 
-It owns the complete authentication lifecycle:
+- `Introduction` for product context and positioning
+- `Architecture` for system model and component boundaries
+- `Integration` for SDK implementation paths
+- `Security & Trust Model` for formal contracts and protocol behavior
+- `Observability` for audit and metrics behavior
+- `Plans & Enforcement` for plan-gated capability behavior
 
-- Login UI
-- OAuth providers
-- Session management
-- Access + Refresh tokens
-- Audit logs
-- Metrics
-- Multi-tenant applications
+An additional `API Reference (Advanced)` block provides compact formal contracts.
 
----
+If you are integrating AuditAuth, start with `Integration`.
 
-## What AuditAuth Is Not
-
-AuditAuth is not a frontend authentication helper.
-
-Client applications:
-
-- Do not implement OAuth.
-- Do not manage providers.
-- Do not handle MFA.
-- Do not store identity logic.
-
-Authentication happens in AuditAuth.
-
-The SDK enforces that authentication has already happened.
-
----
-
-## Quickstart
-
-Install the Next.js SDK:
-
-```bash
-npm install @auditauth/next
-```
-
-Create route handlers:
-
-```ts
-export const { GET, POST } = auditauth.getHandlers();
-```
-
-Add middleware:
-
-```ts
-export default auditauth.middleware();
-```
-
-Protect a route.
-
-Done.
-
----
-
-## Core Principle
-
-> AuditAuth SDKs do not authenticate users.  
-> They enforce that authentication has already happened in AuditAuth.
+If you are reviewing guarantees and limits, start with `Security & Trust Model`.
