@@ -13,9 +13,9 @@ export const metadata = {};
 const banner = (
   <Banner storageKey="auditauth-beta-docs-banner">
     <span className={styles.bannerContent}>
-      <FlaskConical size={14} />
-      <strong>Beta Docs</strong>
-      <span>- You are viewing preview documentation that may change.</span>
+      <FlaskConical size={14} className={styles.icon} />
+      <span className={styles.label}>Beta Docs</span>
+      <span className={styles.text}>You are viewing preview documentation that may change.</span>
       <Link href="/v1" className={styles.link}>
         Switch to stable v1
       </Link>
