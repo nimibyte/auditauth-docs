@@ -1,0 +1,124 @@
+# Governance & Audit
+
+Authentication without governance is incomplete.
+
+AuditAuth integrates identity with structured auditability and traceability.
+
+Every relevant identity event is recorded, scoped, and inspectable.
+
+---
+
+## Audit Model
+
+AuditAuth records identity-related events at the application level.
+
+These include:
+
+- Authentication attempts
+- Successful logins
+- Failed authentication
+- Session creation
+- Session invalidation
+- Token refresh events
+- Profile updates
+- Security-sensitive changes
+
+Audit events are immutable once recorded.
+
+They are scoped per application.
+
+---
+
+## Event Structure
+
+Each audit event contains:
+
+- Event type
+- User identifier
+- Application identifier
+- Timestamp
+- Metadata payload
+- Security context
+
+Events are designed for traceability, not for generic analytics.
+
+They describe identity state transitions.
+
+---
+
+## Application Isolation
+
+Audit logs are isolated per application.
+
+A user interacting with multiple applications generates independent audit trails.
+
+There is no cross-application audit bleed.
+
+Isolation is a core architectural boundary.
+
+---
+
+## Session-Level Traceability
+
+AuditAuth links audit events to sessions.
+
+This enables:
+
+- Reconstruction of authentication timelines
+- Investigation of suspicious behavior
+- Session-level activity review
+- Security audits
+
+Audit data is identity-aware by design.
+
+---
+
+## Governance Principles
+
+### Centralized Recording
+
+All identity events flow through AuditAuth.
+
+Applications do not implement their own logging for authentication state.
+
+### Deterministic State
+
+Every session transition is represented by an audit event.
+
+No implicit state changes exist outside the system.
+
+### Immutable Event History
+
+Audit logs are append-only.
+
+Historical integrity is preserved.
+
+---
+
+## Compliance Considerations
+
+AuditAuth enables:
+
+- Structured event inspection
+- Historical traceability
+- Session reconstruction
+- Governance-ready reporting
+
+Retention and export policies are configurable at the application level.
+
+---
+
+## Observability vs Governance
+
+Governance is not analytics.
+
+Audit logs focus on:
+
+- Security
+- Identity transitions
+- Compliance
+- Traceability
+
+For behavioral metrics and usage insights, continue to:
+
+- Observability

@@ -25,6 +25,22 @@ const meta: MetaRecord = {
     title: 'Architecture',
     type: 'doc',
   },
+  identity: {
+    title: 'Identity',
+    type: 'doc',
+  },
+  governance: {
+    title: 'Governance & Audit',
+    type: 'doc'
+  },
+  observability: {
+    title: 'Observability',
+    type: 'doc'
+  },
+  experience: {
+    title: 'User Experience Layer',
+    type: 'doc'
+  },
 }
 
 export default meta

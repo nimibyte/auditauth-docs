@@ -1,0 +1,125 @@
+# Identity
+
+The Identity layer is responsible for authenticating users and issuing secure sessions.
+
+It defines how users are verified, how tokens are generated, and how sessions are maintained across applications.
+
+Identity is centralized in AuditAuth.
+
+Applications never implement authentication logic directly.
+
+---
+
+## Authentication Methods
+
+AuditAuth supports multiple authentication mechanisms:
+
+- Email and password
+- Social providers
+- Multi-factor authentication (MFA)
+
+Authentication is always performed within AuditAuth’s domain.
+
+Client applications redirect users to AuditAuth when authentication is required.
+
+Credentials never pass through the client application.
+
+---
+
+## Authentication Flow
+
+The high-level authentication flow is:
+
+1. User attempts to access a protected resource.
+2. SDK detects missing or invalid session.
+3. User is redirected to AuditAuth.
+4. Authentication is completed.
+5. AuditAuth issues tokens.
+6. User is redirected back to the application.
+7. SDK validates and enforces session state.
+
+Authentication and enforcement are separate responsibilities.
+
+---
+
+## Token Model
+
+AuditAuth uses a dual-token model:
+
+- Access Token
+- Refresh Token
+
+### Access Token
+
+- Short-lived
+- Used for authenticated API requests
+- Scoped to a specific application
+
+### Refresh Token
+
+- Long-lived
+- Used to issue new access tokens
+- Rotated securely
+
+Tokens are never generated inside the client application.
+
+---
+
+## Session Model
+
+A session represents an authenticated identity within a specific application.
+
+A session includes:
+
+- Authenticated user identity
+- Application context
+- Token pair
+- Metadata (creation time, rotation state, etc.)
+
+Sessions are:
+
+- Created after successful authentication
+- Rotated automatically
+- Invalidated on logout or security events
+
+---
+
+## Session Lifecycle
+
+The lifecycle of a session includes:
+
+- Creation
+- Validation
+- Refresh
+- Invalidation
+
+SDKs handle validation and refresh logic automatically.
+
+If refresh fails, the session is terminated and the user is redirected to authenticate again.
+
+---
+
+## Application Scope
+
+Sessions are scoped per application.
+
+A user authenticated in one application does not implicitly gain access to another.
+
+Each application maintains isolated identity boundaries.
+
+---
+
+## Security Considerations
+
+- Authentication credentials are never exposed to client applications.
+- Token rotation reduces long-lived token risk.
+- Session invalidation propagates immediately.
+- Identity boundaries are enforced at the SDK layer.
+
+---
+
+## Next Step
+
+To understand how identity events are tracked and audited, continue with:
+
+- Governance & Audit

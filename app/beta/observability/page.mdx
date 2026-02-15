@@ -1,0 +1,133 @@
+# Observability
+
+Identity is not only about authentication.
+
+It is about understanding how authenticated users interact with your application.
+
+AuditAuth provides identity-aware observability.
+
+Observability is scoped per application and tied directly to authenticated sessions.
+
+---
+
+## Identity-Aware Metrics
+
+Traditional analytics tools operate independently from authentication systems.
+
+AuditAuth connects:
+
+- Sessions
+- Authentication events
+- Navigation behavior
+- Interaction metrics
+
+Every metric is associated with an authenticated identity context.
+
+---
+
+## Session Metrics
+
+AuditAuth tracks:
+
+- Active sessions
+- Session duration
+- Session refresh cycles
+- Session termination reasons
+
+This enables:
+
+- Real-time session visibility
+- Detection of anomalous session behavior
+- Per-application session analysis
+
+---
+
+## Authentication Metrics
+
+AuditAuth exposes:
+
+- Login success rate
+- Failed authentication attempts
+- MFA usage rate
+- Provider distribution (email vs social)
+
+Authentication performance becomes measurable.
+
+---
+
+## Navigation Metrics
+
+Navigation metrics are tied to authenticated sessions.
+
+They include:
+
+- Page transitions
+- Session navigation flow
+- Entry and exit points
+- Interaction-level events
+
+These metrics are identity-scoped, not anonymous.
+
+---
+
+## Lightweight by Design
+
+AuditAuth is not a full analytics platform.
+
+It does not replace:
+
+- Business intelligence tools
+- Marketing analytics
+- Product analytics platforms
+
+It provides identity-layer observability.
+
+The focus is on how authentication and session state interact with application behavior.
+
+---
+
+## Dashboard Model
+
+Observability data is exposed through:
+
+- Application dashboards
+- Aggregated metrics
+- Session-level inspection
+- Time-based filtering
+
+Dashboards are scoped per application.
+
+There is no cross-application data leakage.
+
+---
+
+## Observability Principles
+
+### Identity Context First
+
+Metrics are tied to authenticated sessions.
+
+### Application Isolation
+
+Each application has independent observability scope.
+
+### Minimal Client Responsibility
+
+The SDK emits identity-related metrics automatically.
+
+Applications do not implement custom tracking logic for identity behavior.
+
+---
+
+## When to Use It
+
+Observability is useful for:
+
+- Monitoring authentication health.
+- Detecting abnormal login patterns.
+- Understanding session stability.
+- Reviewing navigation behavior tied to identity.
+
+For security-focused review, see:
+
+- Governance & Audit
