@@ -10,17 +10,20 @@ import styles from './beta-banner.module.css';
 import 'nextra-theme-docs/style.css';
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://auditauth.com'),
+  metadataBase: new URL('https://docs.auditauth.com'),
   title: {
     default: 'AuditAuth Documentation',
     template: '%s | AuditAuth Documentation',
   },
   description: 'Official AuditAuth documentation for architecture, integration, identity, and governance.',
+  alternates: {
+    canonical: './',
+  },
   applicationName: 'AuditAuth Documentation',
   openGraph: {
     title: 'AuditAuth Documentation',
     description: 'Official AuditAuth documentation for architecture, integration, identity, and governance.',
-    url: 'https://auditauth.com',
+    url: 'https://docs.auditauth.com/beta',
     siteName: 'AuditAuth Documentation',
     type: 'website',
     images: [
@@ -43,6 +46,18 @@ export const metadata: Metadata = {
     shortcut: '/logo.png',
     apple: '/logo.png',
   },
+};
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'AuditAuth Documentation',
+  url: 'https://docs.auditauth.com/beta',
+  publisher: {
+    '@type': 'Organization',
+    name: 'AuditAuth',
+    url: 'https://auditauth.com'
+  }
 };
 
 const banner = (
@@ -82,6 +97,10 @@ export default async function RootLayout({
     <html lang="en" dir="ltr" suppressHydrationWarning>
       <Head />
       <body>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
         <Layout
           banner={banner}
           navbar={navbar}
