@@ -1,4 +1,12 @@
-# AuditAuth Official Documentation
+<p align="center">
+  <img src="./public/logo.png" alt="AuditAuth Logo" width="120" />
+</p>
+
+<h1 align="center">AuditAuth Official Documentation</h1>
+
+<p align="center">
+  Public documentation source for the AuditAuth identity control plane.
+</p>
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE)
 [![Docs Framework: Nextra](https://img.shields.io/badge/Docs-Nextra-000000.svg)](https://nextra.site/)
