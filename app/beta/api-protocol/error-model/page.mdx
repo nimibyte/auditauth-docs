@@ -1,3 +1,294 @@
 # Error Model
 
-> Placeholder: pending detailed content.
+This section defines the formal error contract for AuditAuth APIs.
+
+AuditAuth uses HTTP status codes combined with a structured JSON response.
+
+Errors follow NestJS default exception format.
+
+---
+
+# 1. General Error Structure
+
+All errors return:
+
+```
+{
+  statusCode: number,
+  message: string,
+  error: string
+}
+```
+
+Fields:
+
+statusCode:
+- HTTP status code
+
+message:
+- Human-readable message
+
+error:
+- HTTP error name (e.g., Unauthorized, Forbidden)
+
+There is:
+
+- No `error.code` field
+- No `error.details` object
+- No structured error taxonomy
+
+---
+
+# 2. Authentication Errors
+
+## Missing Authorization Header
+
+Status:
+401 Unauthorized
+
+Message:
+"Missing Authorization header"
+
+---
+
+## Invalid JWT Signature
+
+Status:
+401 Unauthorized
+
+Message:
+"Invalid token"
+
+---
+
+## Expired Access Token
+
+Status:
+401 Unauthorized
+
+Message:
+Token expired or invalid
+
+---
+
+## Invalid Audience
+
+Status:
+401 Unauthorized
+
+Occurs when:
+
+- `aud` does not match expected appId
+
+---
+
+## Invalid Issuer
+
+Status:
+401 Unauthorized
+
+Occurs when:
+
+- `iss` does not match expected issuer
+
+---
+
+## Identity Disabled
+
+Status:
+401 Unauthorized
+
+Occurs when:
+
+- identity status is `disabled`
+- login attempt blocked
+- middleware denies access
+
+---
+
+# 3. Application Errors
+
+## Missing apiKey
+
+Status:
+401 Unauthorized
+
+Message:
+"Missing application api key"
+
+---
+
+## Invalid apiKey
+
+Status:
+401 or 404 depending on endpoint
+
+Examples:
+
+- Login app validation → 401
+- Metrics invalid app → 404
+
+---
+
+## Application Suspended / Invalid
+
+Status:
+401 or 404
+
+Behavior depends on endpoint context.
+
+---
+
+# 4. Authorization Errors
+
+## Feature Disabled by Plan
+
+Status:
+403 Forbidden
+
+Occurs when:
+
+- feature_access flag is false
+- Plan does not allow action
+
+Example:
+
+- metrics disabled
+- auditlog disabled
+- dashboard access restricted
+
+---
+
+# 5. Refresh Errors
+
+## Missing Refresh Token
+
+Status:
+401 Unauthorized
+
+---
+
+## Revoked Refresh Token
+
+Status:
+401 Unauthorized
+
+Occurs when:
+
+- refresh token hash mismatch
+- session revoked
+- refresh token rotated
+
+---
+
+# 6. Metrics Errors
+
+## Invalid Application
+
+Status:
+404 Not Found
+
+---
+
+## Feature Gated by Plan
+
+Status:
+403 Forbidden
+
+---
+
+## Rate Limit Exceeded
+
+Status:
+429 Too Many Requests
+
+Throttle configuration:
+
+- 120 requests per 60 seconds
+- Per IP (default Nest behavior)
+
+Retry-After header:
+
+- Not explicitly implemented
+
+---
+
+# 7. Validation Errors
+
+Validation failures return:
+
+Status:
+400 Bad Request
+
+Shape:
+
+```
+{
+  statusCode: 400,
+  message: string | string[],
+  error: "Bad Request"
+}
+```
+
+---
+
+# 8. Internal Errors
+
+Unhandled exceptions:
+
+Status:
+500 Internal Server Error
+
+Shape:
+
+```
+{
+  statusCode: 500,
+  message: "Internal server error",
+  error: "Internal Server Error"
+}
+```
+
+---
+
+# 9. Error Handling Philosophy
+
+AuditAuth error model is:
+
+- HTTP-native
+- Minimalistic
+- Not deeply structured
+- Intended for SDK wrapping
+
+SDKs abstract most of these errors from application developers.
+
+Backend consumers (e.g., Node verifier) should:
+
+- Catch 401
+- Treat as authentication failure
+- Avoid leaking error details
+
+---
+
+# 10. Beta Limitations
+
+Current implementation does not provide:
+
+- Structured error codes
+- Correlation IDs in response
+- Request tracing identifiers
+- Error categories
+
+Future versions may introduce:
+
+- Error code taxonomy
+- Structured error envelopes
+- Trace ID propagation
+
+---
+
+## Next Step
+
+Continue with:
+
+- Rate Limiting

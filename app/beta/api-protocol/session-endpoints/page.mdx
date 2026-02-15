@@ -1,3 +1,305 @@
 # Session Endpoints
 
-> Placeholder: pending detailed content.
+Session management in AuditAuth is built around:
+
+- Short-lived access tokens (JWT)
+- Rotating opaque refresh tokens
+- Session records in database
+- Runtime middleware enforcement
+
+Sessions are not purely token-based.
+
+They are state-aware.
+
+---
+
+# 1. Refresh Endpoint
+
+## BFF Endpoint
+
+Method:
+GET
+POST
+
+Path:
+```
+/api/auditauth/refresh
+```
+
+---
+
+## Browser Flow
+
+Refresh token is stored in:
+
+- httpOnly cookie
+- Name: `auditauth_refresh`
+- SameSite: none (production API)
+- Secure: true (production)
+- Path: /
+
+Flow:
+
+1. BFF reads refresh cookie.
+2. Calls upstream:
+   ```
+   POST /v1/auth/refresh
+   ```
+   with `client_type = browser`
+3. Upstream returns:
+   ```
+   { access_token }
+   ```
+4. Refresh token is rotated.
+5. New cookies are set:
+   - auditauth_access
+   - auditauth_refresh
+6. BFF optionally redirects (GET variant).
+
+Success Responses:
+
+- 302 (GET variant)
+- 200 (POST variant in some flows)
+
+Failure Responses:
+
+- 401 (invalid or revoked refresh token)
+
+---
+
+## Server Flow
+
+Upstream endpoint:
+
+```
+POST /v1/auth/refresh
+```
+
+With:
+
+- refresh_token in body
+- client_type = server
+
+Response:
+
+```
+{
+  access_token,
+  access_expires_seconds,
+  refresh_token,
+  refresh_expires_seconds
+}
+```
+
+No cookies involved in server flow.
+
+---
+
+## Refresh Rotation
+
+Refresh tokens:
+
+- Are rotated on every refresh.
+- Previous token is invalidated.
+- Stored hashed in DB.
+- Bound to session record.
+
+If refresh token:
+
+- Does not exist
+- Is revoked
+- Hash mismatch occurs
+
+Response:
+
+- 401 Unauthorized
+
+---
+
+# 2. Logout Endpoint
+
+## BFF Endpoint
+
+Method:
+GET
+
+Path:
+```
+/api/auditauth/logout
+```
+
+Behavior:
+
+1. Clears cookies:
+   - auditauth_access
+   - auditauth_refresh
+   - auditauth_session
+2. If access token exists:
+   - Calls:
+     ```
+     PATCH /v1/auth/revoke
+     ```
+     with Bearer token.
+3. Redirects user.
+
+Response:
+
+- 302 Redirect
+
+---
+
+## Revocation Behavior
+
+Logout:
+
+- Marks session as revoked.
+- Invalidates refresh token.
+- Prevents further refresh.
+
+Access tokens:
+
+- Remain cryptographically valid until expiration.
+- Are blocked by middleware if identity disabled.
+
+Session revocation is state-driven.
+
+---
+
+# 3. Session Endpoint
+
+## BFF Endpoint
+
+Method:
+GET
+
+Path:
+```
+/api/auditauth/session
+```
+
+Response:
+
+```
+{
+  user: SessionUser
+}
+```
+
+Status Codes:
+
+- 200 (valid session)
+- 401 (no valid session)
+
+Session endpoint validates:
+
+- Access token
+- Session state
+- Identity state
+- Application state
+
+---
+
+# Sliding Expiration Model
+
+Access Token TTL:
+
+- 30 minutes
+
+Refresh Token TTL:
+
+- 5 days
+
+Refresh extends session:
+
+- Every successful refresh resets refresh expiration.
+- Session expiration is effectively sliding.
+
+There is no absolute session lifetime limit in current Beta.
+
+---
+
+# Runtime Enforcement
+
+Even if:
+
+- Access token has not expired
+
+Middleware validation may deny access if:
+
+- Identity disabled
+- Application suspended
+- Session revoked
+
+Access control is not purely token-based.
+
+It is state-aware.
+
+---
+
+# Cookie Model
+
+Production (API):
+
+- SameSite: none
+- Secure: true
+
+Development:
+
+- SameSite: lax
+
+Cookie domain:
+
+- Host-only (no explicit domain set)
+
+Cookies are:
+
+- httpOnly (refresh)
+- Controlled by environment
+
+---
+
+# Failure Scenarios
+
+Common errors:
+
+- Missing refresh cookie → 401
+- Revoked refresh token → 401
+- Expired refresh token → 401
+- Identity disabled → 401
+- Application invalid → 401 or 404
+
+Error shape:
+
+```
+{
+  statusCode: number,
+  message: string,
+  error: string
+}
+```
+
+---
+
+# Security Characteristics
+
+Session model provides:
+
+- Rotating refresh tokens
+- Opaque refresh storage
+- Short-lived access tokens
+- Middleware-level enforcement
+
+Limitations (Beta):
+
+- No CSRF protection layer
+- No absolute session max lifetime
+- No centralized session audit timeline
+- Static signing key
+
+---
+
+## Next Step
+
+Continue with:
+
+- Metrics Ingestion API

@@ -1,3 +1,282 @@
 # Trust Boundaries
 
-> Placeholder: pending detailed content.
+This section defines the trust boundaries and enforcement model of AuditAuth.
+
+Understanding these boundaries is critical for security architecture decisions.
+
+AuditAuth is not a purely stateless JWT system.
+
+It combines:
+
+- Cryptographic validation
+- Stateful session control
+- Application-scoped enforcement
+- Plan-based feature gating
+
+---
+
+# 1. Domain Separation
+
+Production domains:
+
+API:
+https://api.auditauth.com
+
+Web / Console:
+https://auditauth.com
+
+Authentication flows cross domains.
+
+Cookies are scoped to API domain.
+
+Console lives on web domain.
+
+This separation reduces attack surface between:
+
+- Authentication logic
+- Administrative console
+- Client applications
+
+---
+
+# 2. Token Trust Boundary
+
+Access tokens:
+
+- Signed with RS256
+- Include app_id and account_id
+- Short-lived (30 minutes)
+
+Signature ensures:
+
+- Integrity
+- Issuer authenticity
+
+Signature alone does not grant access.
+
+Runtime enforcement checks:
+
+- Session state
+- Identity state
+- Application state
+
+A valid signature does not bypass business enforcement.
+
+---
+
+# 3. Session Trust Boundary
+
+Refresh tokens:
+
+- Opaque
+- Stored hashed
+- Rotated on use
+- Bound to session record
+
+Session revocation:
+
+- Marks session revoked
+- Blocks refresh
+- Middleware blocks access on next request
+
+Session state is authoritative.
+
+Access tokens are secondary.
+
+---
+
+# 4. Identity Enforcement
+
+Identities have state.
+
+If identity is:
+
+- disabled
+
+Then:
+
+- Login is blocked
+- Refresh is blocked
+- Middleware denies access
+- Real-time enforcement applies
+
+Even if access token is still valid,
+middleware checks identity state.
+
+This provides near real-time enforcement.
+
+Maximum window of token-only access:
+
+- Access token TTL (30 minutes)
+
+But middleware actively blocks if identity disabled.
+
+---
+
+# 5. Application Boundary
+
+Each request validates:
+
+- appId
+- apiKey (where applicable)
+- aud claim (in SDK node verifier)
+
+Application isolation is logical:
+
+- Data scoped by application field
+- No physical DB partitioning
+
+Application suspension or invalidation:
+
+- Blocks login
+- Blocks metrics ingestion
+- Blocks refresh
+
+---
+
+# 6. Observability Boundary
+
+Metrics ingestion:
+
+- Requires apiKey + appId
+- Does not require user JWT
+
+Audit logs:
+
+- Tied to authenticated flows
+- Persisted per application
+
+Observability enforcement is plan-aware.
+
+Sampling and retention are applied at ingestion time.
+
+---
+
+# 7. CORS Boundary
+
+CORS is:
+
+- Globally enabled
+- Origin-restricted
+- Credentials allowed
+
+Allowed origins:
+
+- Configured per application
+- localhost in development
+
+There is no referer validation.
+
+There is no CSRF-specific protection layer.
+
+Refresh relies on:
+
+- SameSite cookie policy
+- httpOnly cookie
+- Secure flag in production
+
+---
+
+# 8. Key Management Boundary
+
+Current Beta:
+
+- Single signing key
+- Static kid = "main"
+- No JWKS endpoint
+- Public key exposed via endpoint
+- No rotation support
+
+Implication:
+
+- Key compromise requires redeploy
+- No overlapping key window
+- No dynamic key refresh
+
+---
+
+# 9. Revocation Model
+
+Access tokens:
+
+- Not blacklisted
+- Cannot be revoked individually
+
+Refresh tokens:
+
+- Revoked via session
+- Rotated on use
+- Hash validated
+
+Revocation enforcement relies on:
+
+- Session record
+- Identity status
+- Middleware guards
+
+---
+
+# 10. Plan Enforcement Boundary
+
+Plan determines:
+
+- Feature access
+- Retention days
+- Sampling rate
+- Dashboard visibility
+- Whitelabel configuration
+
+Plan enforcement is:
+
+- Runtime-checked
+- Applied during ingestion (metrics)
+- Applied during access (dashboards)
+
+Plan changes:
+
+- Affect new events
+- Do not retroactively modify historical expires_at
+
+---
+
+# 11. Known Beta Limitations
+
+Current version does not include:
+
+- JWKS endpoint
+- Key rotation
+- Token introspection endpoint
+- CSRF token mechanism
+- Absolute session lifetime
+- Structured error taxonomy
+- Cryptographically immutable audit logs
+- Physical data isolation per tenant
+
+---
+
+# 12. Security Model Summary
+
+AuditAuth security is built on:
+
+- Short-lived signed JWTs
+- Rotating opaque refresh tokens
+- Session-state enforcement
+- Identity-state enforcement
+- Application-level validation
+- Plan-based gating
+
+It is state-aware and not purely token-based.
+
+Trust is layered:
+
+1. Signature validation
+2. Session validation
+3. Identity validation
+4. Application validation
+5. Plan validation
+
+Each layer must pass.
+
+---
+
+## End of API & Protocol Reference

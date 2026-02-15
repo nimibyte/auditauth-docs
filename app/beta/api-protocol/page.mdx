@@ -1,5 +1,153 @@
-# API Protocol Overview
+# API & Protocol Reference
 
-> Placeholder: pending detailed content.
+This section defines the formal REST and protocol-level contract of AuditAuth (Beta).
 
-This section documents the protocol surface of AuditAuth APIs.
+It documents:
+
+- Authentication endpoints
+- Token exchange behavior
+- Session model
+- Metrics ingestion API
+- JWT structure
+- Error model
+- Rate limiting
+- Trust boundaries
+
+This is a protocol-level specification.
+
+It is not a tutorial.
+
+---
+
+## Environment Model
+
+### Production
+
+API:
+https://api.auditauth.com/v1
+
+Web / Console:
+https://auditauth.com
+
+### Local Development
+
+API:
+http://localhost:4000/v1
+
+Web:
+http://localhost:3000
+
+The API is versioned using a global prefix:
+
+```
+/v1
+```
+
+Authentication API runs on a separate domain from the web application.
+
+---
+
+## Architectural Separation
+
+AuditAuth separates:
+
+- Web / Console domain
+- API domain
+
+SDKs are configurable and may point to:
+
+- Local API
+- Production API
+- Custom environments
+
+There is no enforced single base domain.
+
+---
+
+## Protocol Scope
+
+This specification covers:
+
+- BFF endpoints exposed by SDK (e.g. /api/auditauth/*)
+- Upstream API endpoints (e.g. /v1/auth/*)
+- Metrics ingestion contract
+- Token format
+- Error contract
+- Enforcement behavior
+
+It does not cover:
+
+- Internal service architecture
+- Console internal APIs
+- Database schema
+- Non-public administrative endpoints
+
+---
+
+## Versioning Model
+
+API versioning is path-based:
+
+```
+/v1
+```
+
+There is no semantic versioning in headers.
+
+Versioning applies to:
+
+- Authentication API
+- Metrics ingestion API
+- Portal exchange API
+- Public key endpoint
+
+---
+
+## Security Model (High-Level)
+
+Security boundaries include:
+
+- RS256-signed JWT access tokens
+- Opaque refresh tokens (hashed in DB)
+- API key validation per application
+- CORS origin restrictions
+- SameSite and secure cookie enforcement
+- Runtime middleware enforcement
+
+Detailed security characteristics are described in:
+
+- JWT Specification
+- Session Endpoints
+- Trust Boundaries
+
+---
+
+## Beta Characteristics
+
+Current Beta characteristics include:
+
+- Static signing key (`kid: "main"`)
+- No JWKS endpoint
+- Public key endpoint available
+- No cryptographic log immutability
+- No CSRF protection layer
+- No per-tenant physical isolation
+
+This section documents current behavior.
+
+Future versions may expand protocol guarantees.
+
+---
+
+## Next Sections
+
+Continue with:
+
+- Authentication Endpoints
+- Token Exchange Flow
+- Session Endpoints
+- Metrics Ingestion API
+- JWT Specification
+- Error Model
+- Rate Limiting
+- Trust Boundaries

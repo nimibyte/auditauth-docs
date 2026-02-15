@@ -5,7 +5,6 @@ import { Banner, Head } from 'nextra/components';
 import { FlaskConical } from 'lucide-react';
 import { getPageMap } from 'nextra/page-map';
 import Link from 'next/link';
-import { headers } from 'next/headers';
 import { SiteFooter } from '../site-footer';
 import styles from './beta-banner.module.css';
 import 'nextra-theme-docs/style.css';
@@ -79,18 +78,11 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const headersList = await headers();
-  const pathname = headersList.get('x-pathname') || '/beta';
-
-  const segments = pathname.split('/').filter(Boolean);
-  const version = segments[0] || 'beta';
-
   return (
     <html lang="en" dir="ltr" suppressHydrationWarning>
       <Head />
       <body>
         <Layout
-          key={version}
           banner={banner}
           navbar={navbar}
           footer={footer}

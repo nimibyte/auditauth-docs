@@ -1,3 +1,140 @@
 # Rate Limiting
 
-> Placeholder: pending detailed content.
+AuditAuth applies global request throttling to protect the API from abuse.
+
+Rate limiting is implemented at the API layer using NestJS Throttler.
+
+---
+
+# 1. Global Configuration
+
+Current configuration:
+
+- 120 requests
+- Per 60 seconds
+- Per IP address
+
+This applies globally to all API endpoints.
+
+There is no endpoint-specific throttling configuration.
+
+---
+
+# 2. Enforcement Scope
+
+Rate limiting applies to:
+
+- Authentication endpoints
+- Refresh endpoint
+- Metrics ingestion
+- Portal exchange
+- Public key endpoint
+
+There is no differentiation between:
+
+- Authenticated vs unauthenticated requests
+- Application-level vs identity-level
+
+Enforcement is IP-based.
+
+---
+
+# 3. Response When Exceeded
+
+Status:
+
+429 Too Many Requests
+
+Response body (Nest default):
+
+```
+{
+  statusCode: 429,
+  message: "Too Many Requests",
+  error: "Too Many Requests"
+}
+```
+
+Retry-After header:
+
+- Not explicitly configured
+- Default behavior may vary by framework
+
+---
+
+# 4. Design Implications
+
+IP-based throttling means:
+
+- Shared IP environments may hit limits
+- High-volume metrics ingestion may require batching
+- No per-app quota isolation
+
+There is no:
+
+- Per apiKey rate limit
+- Per appId rate limit
+- Per identity rate limit
+
+---
+
+# 5. Security Role
+
+Rate limiting provides:
+
+- Basic DoS protection
+- Abuse mitigation
+- Brute-force resistance layer
+
+It does not provide:
+
+- Application-level quota enforcement
+- Tier-based rate scaling
+- Per-plan rate adjustments
+
+---
+
+# 6. Interaction with Metrics
+
+Metrics ingestion is subject to:
+
+- Global rate limit
+- Sampling rules
+- Feature gating
+
+Sampling reduces ingestion volume,
+but does not affect rate limit calculation.
+
+---
+
+# 7. Beta Limitations
+
+Current Beta does not include:
+
+- Dynamic rate policies per plan
+- Sliding window per app
+- Token bucket per apiKey
+- Burst control differentiation
+
+All requests share the same throttle guard.
+
+---
+
+# 8. Production Considerations
+
+In high-scale environments, recommended improvements include:
+
+- Per-app rate limits
+- Per-plan rate tiers
+- Separate throttling for metrics
+- Distributed rate limiting (e.g., Redis-backed)
+
+These are not implemented in current version.
+
+---
+
+## Next Step
+
+Continue with:
+
+- Trust Boundaries
