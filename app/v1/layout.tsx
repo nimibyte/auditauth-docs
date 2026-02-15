@@ -44,6 +44,7 @@ export default async function RootLayout({
         <Layout
           banner={banner}
           navbar={navbar}
+          footer={footer}
           pageMap={await getPageMap('/v1')}
           docsRepositoryBase="https://github.com/nimibyte/auditauth-docs"
         >

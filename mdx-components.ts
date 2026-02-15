@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMDXComponents as getThemeComponents } from 'nextra-theme-docs';
  
 const themeComponents = getThemeComponents();

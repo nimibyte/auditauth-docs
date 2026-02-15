@@ -1,15 +1,25 @@
 /* eslint-disable @next/next/no-img-element */
 import { Footer, Layout, Navbar } from 'nextra-theme-docs';
 import { Banner, Head } from 'nextra/components';
+import { FlaskConical } from 'lucide-react';
 import { getPageMap } from 'nextra/page-map';
+import Link from 'next/link';
 import { headers } from 'next/headers';
+import styles from './beta-banner.module.css';
 import 'nextra-theme-docs/style.css';
 
 export const metadata = {};
 
 const banner = (
-  <Banner storageKey="some-key">
-    AuditAuth Docs
+  <Banner storageKey="auditauth-beta-docs-banner">
+    <span className={styles.bannerContent}>
+      <FlaskConical size={14} />
+      <strong>Beta Docs</strong>
+      <span>- You are viewing preview documentation that may change.</span>
+      <Link href="/v1" className={styles.link}>
+        Switch to stable v1
+      </Link>
+    </span>
   </Banner>
 );
 
@@ -51,6 +61,7 @@ export default async function RootLayout({
           key={version}
           banner={banner}
           navbar={navbar}
+          footer={footer}
           pageMap={await getPageMap('/beta')}
           docsRepositoryBase="https://github.com/nimibyte/auditauth-docs"
         >
