@@ -1,16 +1,22 @@
 # Rate Limiting
 
-Purpose: define request-throttling guarantees and response behavior.
+AuditAuth enforces request throttling to protect platform stability.
 
-## Policy
+## Enforcement
 
-- Limit: `120` requests
-- Window: `60` seconds
-- Scope: global endpoint policy
-- Keying: per IP
+- Exceeded limits return `429 Too Many Requests`.
+- Limits can vary by endpoint class and platform policy.
+- Enforcement may combine identity, key, and network context.
 
-## Enforcement Behavior
+## Client Strategy
 
-- Requests above threshold are rejected.
-- Rejected requests return `429 Too Many Requests`.
-- Clients should apply retry backoff and burst smoothing.
+- Use exponential backoff with jitter for retries.
+- Avoid synchronized retries from multiple workers.
+- Throttle proactively on client side for burst-heavy jobs.
+- Treat repeated `429` as a signal to reduce request pressure.
+
+## Integration Guidance
+
+- Keep auth refresh calls strictly on demand.
+- Queue non-critical telemetry (`/metrics`) during bursts.
+- Prefer idempotent retry patterns for safe operations.

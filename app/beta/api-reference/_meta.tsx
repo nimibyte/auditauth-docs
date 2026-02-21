@@ -5,16 +5,28 @@ const meta: MetaRecord = {
     title: 'Overview',
     type: 'doc'
   },
-  'authentication-endpoints': {
-    title: 'Authentication Endpoints',
+  'hosted-login-flow': {
+    title: 'Hosted Login Flow',
     type: 'doc'
   },
-  'session-endpoints': {
-    title: 'Session Endpoints',
+  'session-lifecycle': {
+    title: 'Session Lifecycle',
     type: 'doc'
   },
-  'jwt-specification': {
-    title: 'JWT Specification',
+  'portal-flow': {
+    title: 'Portal Flow',
+    type: 'doc'
+  },
+  'custom-identity-flows': {
+    title: 'Custom Identity Flows',
+    type: 'doc'
+  },
+  'metrics-ingestion': {
+    title: 'Metrics Ingestion',
+    type: 'doc'
+  },
+  'jwt-public-key': {
+    title: 'JWT & Public Key',
     type: 'doc'
   },
   'error-model': {
@@ -23,6 +35,10 @@ const meta: MetaRecord = {
   },
   'rate-limiting': {
     title: 'Rate Limiting',
+    type: 'doc'
+  },
+  'schemas-payloads': {
+    title: 'Schemas & Payloads',
     type: 'doc'
   }
 };

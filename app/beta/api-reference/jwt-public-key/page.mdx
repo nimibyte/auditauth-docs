@@ -1,0 +1,34 @@
+# JWT & Public Key
+
+Use this page to validate AuditAuth access tokens in your backend.
+
+## Public Key Endpoint
+
+Endpoint: `GET /public_key`
+
+Response shape:
+
+- `publicKey`: PEM-encoded RSA public key
+
+## Token Verification Rules
+
+Validate all of the following:
+
+- Signature algorithm: `RS256`
+- Issuer (`iss`): `https://api.auditauth.com`
+- Audience (`aud`): your AuditAuth `appId`
+- Temporal claims: `exp`, `iat`
+
+## Common Claims
+
+- `sub`: identity id
+- `app_id`: application id
+- `account_id`: account id
+- `email`: identity email
+- `plan`: application plan
+
+## Security Guidance
+
+- Reject tokens if any validation rule fails.
+- Do not trust decoded payload without signature verification.
+- Cache key material with rotation awareness.

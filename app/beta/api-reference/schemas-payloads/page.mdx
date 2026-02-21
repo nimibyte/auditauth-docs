@@ -1,0 +1,58 @@
+# Schemas & Payloads
+
+This page centralizes core payload contracts used across the API flow.
+
+## Login Request (`POST /applications/login`)
+
+```json
+{
+  "redirect_url": "https://app.example.com/auth/callback",
+  "cancel_url": "https://app.example.com/auth/cancel"
+}
+```
+
+## Authorize Request (`POST /auth/authorize`)
+
+```json
+{
+  "code": "<AUTH_CODE>",
+  "client_type": "server"
+}
+```
+
+## Authorize/Refresh Credentials
+
+```json
+{
+  "access_token": "<JWT>",
+  "access_expires_seconds": 1800,
+  "refresh_token": "<OPAQUE_TOKEN>",
+  "refresh_expires_seconds": 432000
+}
+```
+
+## Standard Error Shape
+
+```json
+{
+  "statusCode": 401,
+  "message": "Authorization code not found, invalid, or expired",
+  "error": "Unauthorized"
+}
+```
+
+## Metrics Payload (minimum)
+
+```json
+{
+  "appId": "<APP_ID>",
+  "apiKey": "<API_KEY>",
+  "session_id": "sid_123",
+  "event_type": "navigation",
+  "runtime": "browser",
+  "target": {
+    "type": "page",
+    "path": "/dashboard"
+  }
+}
+```

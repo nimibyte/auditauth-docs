@@ -1,0 +1,50 @@
+# Session Lifecycle
+
+This page defines how access and refresh credentials are maintained after `auth/authorize`.
+
+## Refresh Session
+
+Endpoint: `POST /auth/refresh`
+
+Body:
+
+- `client_type`: `browser` | `server` | `mobile`
+- `refresh_token` (required for server/mobile, optional when browser cookie is used)
+
+Behavior:
+
+- Issues new access token
+- Rotates refresh token when refresh succeeds
+- Returns `401` when refresh token is missing, revoked, or expired
+
+Example:
+
+```bash
+curl -X POST "https://api.auditauth.com/v1/auth/refresh" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "client_type": "server",
+    "refresh_token": "<REFRESH_TOKEN>"
+  }'
+```
+
+## Revoke Session
+
+Endpoint: `PATCH /auth/revoke`
+
+Headers:
+
+- `Authorization: Bearer <ACCESS_TOKEN>`
+
+Behavior:
+
+- Revokes active session for authenticated identity
+- Future refresh attempts for that revoked session fail with `401`
+
+## Session Design Rules
+
+- Treat access token as short-lived credential.
+- Treat refresh token as revocable server state.
+- On `401` from refresh, force full login restart.
+
+Next: see `Portal Flow` for portal exchange and portal tokens.

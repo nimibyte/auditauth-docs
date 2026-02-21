@@ -1,0 +1,31 @@
+# Custom Identity Flows
+
+Use these endpoints when you do not use hosted UI for full identity lifecycle UX.
+
+## Endpoints
+
+- `POST /auth/register`
+- `POST /auth/verify-email`
+- `POST /auth/forgot-password`
+- `POST /auth/reset-password`
+- `POST /auth/exchange`
+
+## Flow Guard Requirement
+
+Some endpoints are protected by auth-flow context and require:
+
+- Header: `x-auth-flow-id`
+
+If missing or invalid, API returns `401`.
+
+## Operational Notes
+
+- Verification and reset codes are short-lived and single-use.
+- Register and forgot-password are anti-enumeration oriented.
+- Password reset and verify email return an auth `code` that can be exchanged again through `POST /auth/authorize`.
+
+## Recommended Integration Pattern
+
+1. Create/start auth flow in your frontend journey.
+2. Pass `x-auth-flow-id` on relevant custom auth endpoints.
+3. On success code return, complete session with `POST /auth/authorize`.

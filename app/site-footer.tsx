@@ -31,6 +31,9 @@ export const SiteFooter = () => {
         <div>
           <span className={styles.sectionTitle}>Resources</span>
           <div className={styles.list}>
+            <a href="https://api.auditauth.com/docs-public#/" target="_blank" rel="noreferrer" className={styles.link}>
+              Public API Swagger
+            </a>
             <a href="https://github.com/nimibyte/auditauth-docs" target="_blank" rel="noreferrer" className={styles.link}>
               Docs Source
             </a>

@@ -1,0 +1,46 @@
+# Portal Flow
+
+Use this flow to send authenticated users from your app to AuditAuth portal experiences.
+
+## 1) Request Portal Exchange
+
+Endpoint: `GET /portal/exchange`
+
+Headers:
+
+- `Authorization: Bearer <ACCESS_TOKEN>`
+
+Response:
+
+- `code`
+- `redirectUrl` (portal callback URL)
+
+## 2) Authorize Portal Session
+
+Endpoint: `POST /portal/authorize`
+
+Body:
+
+- `code`
+- `redirectUrl` (must be an allowed application origin)
+
+Response:
+
+- `access_token` (portal audience)
+- `refresh_token`
+- `expires_at`
+- `user`
+- `application`
+
+## Portal User Endpoints
+
+- `GET /portal/me`
+- `PATCH /portal/profile`
+- `PATCH /portal/mfa/enable`
+- `PATCH /portal/mfa/disable`
+
+## Failure Cases
+
+- `401`: missing/invalid bearer token or invalid portal code
+- `403`: feature blocked by plan permissions
+- `404`: identity/application not found

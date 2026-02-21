@@ -1,15 +1,38 @@
-# API Reference (Advanced)
+# API Reference
 
-Purpose: provide compact, formal contracts for backend integrators and architecture review.
+This section documents direct integration with the AuditAuth public API.
 
-This block includes endpoint behavior, token format, error contracts, and rate limits.
+Base URL: `https://api.auditauth.com/v1`
 
-Use `Security & Trust Model` for conceptual architecture. Use this block for exact protocol expectations.
+Interactive API console: [https://api.auditauth.com/docs-public#/](https://api.auditauth.com/docs-public#/)
 
-## Contents
+## Scope
 
-- Authentication Endpoints
-- Session Endpoints
-- JWT Specification
+Use this reference when your team wants to integrate manually without SDK wrappers.
+
+The canonical flow is:
+
+1. Start login with `POST /applications/login`
+2. Redirect user to hosted login
+3. Receive callback with `code`
+4. Exchange with `POST /auth/authorize`
+5. Maintain session with `POST /auth/refresh`
+6. End session with `PATCH /auth/revoke`
+
+## Public API Surface
+
+- Hosted Login Flow
+- Session Lifecycle
+- Portal Flow
+- Custom Identity Flows
+- Metrics Ingestion
+- JWT & Public Key
 - Error Model
 - Rate Limiting
+- Schemas & Payloads
+
+## Contract Notes
+
+- API paths in this section are always relative to `https://api.auditauth.com/v1`.
+- This reference excludes SDK-specific BFF endpoints.
+- Error handling should branch by HTTP status first, then by message details.

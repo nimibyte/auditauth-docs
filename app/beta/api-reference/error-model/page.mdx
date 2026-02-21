@@ -1,24 +1,32 @@
 # Error Model
 
-Purpose: define HTTP error behavior for integration and enforcement handling.
+Applications should branch on HTTP status first, then parse the message for endpoint-specific reason.
 
-## Response Shape
+## Standard Shape
 
-Typical error responses use a structured JSON payload with an error code/message contract.
+```json
+{
+  "statusCode": 401,
+  "message": "Authorization code not found, invalid, or expired",
+  "error": "Unauthorized"
+}
+```
 
-Applications should branch on HTTP status first, then error code where available.
+## Core Status Semantics
 
-## Common Status Codes
+- `400 Bad Request`: payload shape invalid or required fields missing
+- `401 Unauthorized`: missing token/header, invalid code, expired/revoked session
+- `403 Forbidden`: feature/provider blocked by current plan permissions
+- `404 Not Found`: application, identity, or feature config not found
+- `409 Conflict`: plan limit conflict (for example max users reached)
+- `429 Too Many Requests`: throttling limit exceeded
+- `5xx`: transient platform or upstream error
 
-- `401 Unauthorized`: invalid or expired token/session, refresh failure, auth required
-- `403 Forbidden`: valid identity but blocked by policy, plan, or lifecycle restrictions
-- `404 Not Found`: unknown route/action or unavailable endpoint
-- `429 Too Many Requests`: request-rate threshold exceeded
-- `5xx`: upstream or internal processing failure
+## Handling Recommendations
 
-## Client Handling Guidance
-
-- `401`: trigger re-authentication or refresh path
-- `403`: show explicit access-restricted state
-- `429`: retry with backoff
-- `5xx`: fail closed and surface transient error state
+- `400`: fail fast and correct payload/client contract
+- `401`: restart login or token lifecycle flow
+- `403`: surface explicit plan/permission restriction to operators
+- `404`: validate IDs, API key binding, and environment
+- `409`: show capacity/business conflict guidance
+- `429`: apply retry with backoff and jitter

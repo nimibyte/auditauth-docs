@@ -1,0 +1,49 @@
+# Metrics Ingestion
+
+AuditAuth can ingest optional observability events for identity-aware request and navigation telemetry.
+
+## Ingestion Endpoint
+
+Endpoint: `POST /metrics`
+
+Required body fields:
+
+- `appId`
+- `apiKey`
+- `session_id`
+- `event_type`
+- `runtime`
+- `target`
+
+Example:
+
+```bash
+curl -X POST "https://api.auditauth.com/v1/metrics" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "appId": "<APP_ID>",
+    "apiKey": "<API_KEY>",
+    "session_id": "sid_123",
+    "event_type": "request",
+    "runtime": "server",
+    "target": {
+      "type": "api",
+      "method": "GET",
+      "path": "/private/profile",
+      "status": 200,
+      "duration_ms": 63
+    }
+  }'
+```
+
+## Validation & Access
+
+- `401`: missing `appId` or `apiKey`
+- `403`: metrics feature disabled for current plan
+- `404`: invalid application or missing feature configuration
+
+## Event Types
+
+- `request`: API/backend interactions
+- `navigation`: page transitions
+- `custom`: domain-specific events

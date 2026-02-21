@@ -1,0 +1,61 @@
+# Hosted Login Flow
+
+Use this flow when you want AuditAuth-hosted authentication and your own application callback handling.
+
+## 1) Start Login
+
+Endpoint: `POST /applications/login`
+
+Required input:
+
+- Header: `x-api-key`
+- Body: `redirect_url`, `cancel_url`
+
+Response:
+
+- `redirectUrl`: signed URL to AuditAuth hosted login
+- `code`: auth flow identifier
+
+Example:
+
+```bash
+curl -X POST "https://api.auditauth.com/v1/applications/login" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: <AUDITAUTH_API_KEY>" \
+  -d '{
+    "redirect_url": "https://app.example.com/auth/callback",
+    "cancel_url": "https://app.example.com/auth/cancel"
+  }'
+```
+
+## 2) Redirect To Hosted Login
+
+Send the user to the returned `redirectUrl`.
+
+After user authentication, AuditAuth redirects to your `redirect_url` with a query param:
+
+- `code`: authorization code to exchange
+
+## 3) Exchange Callback Code
+
+Endpoint: `POST /auth/authorize`
+
+Body:
+
+- `code`
+- `client_type`: `browser` | `server` | `mobile`
+
+Response:
+
+- `access_token`
+- `access_expires_seconds`
+- `user`
+- `refresh_token` and `refresh_expires_seconds` for non-browser clients
+
+## Failure Cases
+
+- `401`: code invalid, expired, or already consumed
+- `403`: provider blocked by application plan
+- `409`: max users limit reached on plan
+
+Next: see `Session Lifecycle` for refresh/revoke behavior.
