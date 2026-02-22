@@ -84,6 +84,18 @@ If not, use SPA integration with explicit browser hardening and strict token han
 
 ---
 
+## Apple Sign-In Matching Note (Beta)
+
+If your product has existing users and relies on email-based account matching, treat Apple Sign-In relay addresses as non-deterministic.
+
+Apple users can choose to hide their real email during OAuth, which may return a relay inbox instead of the original account email.
+
+During Beta, require real-email selection or apply a fallback linking step.
+
+`v1` will include a definitive AuditAuth solution for this scenario.
+
+---
+
 ## Next Step
 
 To integrate AuditAuth into a production application, continue with:

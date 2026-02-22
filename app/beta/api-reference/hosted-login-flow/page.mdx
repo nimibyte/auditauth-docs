@@ -52,6 +52,25 @@ Response:
 - `user`
 - `refresh_token` and `refresh_expires_seconds` for non-browser clients
 
+## Apple Sign-In Email Relay (Beta)
+
+When users authenticate with Apple, they can choose to hide their real email.
+
+If that option is selected, Apple may return a relay address (for example `@privaterelay.appleid.com`) instead of the real inbox.
+
+For applications with existing users that match accounts by email, this affects deterministic identity matching.
+
+### Integration Requirement
+
+- For migration or account-linking scenarios, instruct users to continue with their real Apple email.
+- If a relay email is received, do not assume it maps to an existing platform account.
+
+### Beta Scope
+
+This is a known Beta limitation.
+
+In `v1`, AuditAuth will provide a definitive product-level solution for deterministic linking in Apple relay scenarios.
+
 ## Failure Cases
 
 - `401`: code invalid, expired, or already consumed

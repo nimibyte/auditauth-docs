@@ -29,3 +29,9 @@ If missing or invalid, API returns `401`.
 1. Create/start auth flow in your frontend journey.
 2. Pass `x-auth-flow-id` on relevant custom auth endpoints.
 3. On success code return, complete session with `POST /auth/authorize`.
+
+## Apple Relay Notice (Beta)
+
+If your application links existing users by email, review the Apple relay guidance in `Hosted Login Flow` before enabling Apple-based linking paths.
+
+In Beta, relay emails can prevent deterministic matching. A definitive solution will be included in `v1`.
