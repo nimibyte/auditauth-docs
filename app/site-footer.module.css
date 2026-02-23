@@ -26,9 +26,10 @@
 
 .logo {
   width: 36px;
-  height: 42px;
+  height: 36px;
   border-radius: 6px;
   padding: 3px;
+  object-fit: contain;
 }
 
 .title {

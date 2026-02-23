@@ -7,9 +7,10 @@
 
 .navLogoImage {
   width: 30px;
-  height: 36px;
+  height: 30px;
   border-radius: 6px;
   flex-shrink: 0;
+  object-fit: contain;
 }
 
 .navLogoText {
@@ -35,7 +36,7 @@
 @media (max-width: 900px) {
   .navLogoImage {
     width: 28px;
-    height: 32px;
+    height: 28px;
   }
 
   .navLogoText {
